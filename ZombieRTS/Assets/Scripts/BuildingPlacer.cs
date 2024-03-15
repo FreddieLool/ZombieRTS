@@ -3,15 +3,17 @@ using UnityEngine.EventSystems;
 
 public class BuildingPlacer : MonoBehaviour
 {
+    public static BuildingPlacer Instance { get; set; }
     public LayerMask Ground;
-    [SerializeField] GameObject BuildingPrefab;
-    [SerializeField] GameObject ToBuild;
+    [SerializeField] BuildingSelectionManager BuildingSelectionManager;
 
+    GameObject BuildingPrefab;
+    GameObject ToBuild;
     Camera mainCamera;
+
     Ray ray;
     RaycastHit hit;
 
-    public static BuildingPlacer Instance { get; set; }
 
     private void Awake()
     {
@@ -23,18 +25,36 @@ public class BuildingPlacer : MonoBehaviour
     {
         if (BuildingPrefab != null)
         {
+            if (Input.GetMouseButtonDown(1))
+            {
+                Destroy(ToBuild);
+                BuildingPrefab = null;
+                ToBuild = null;
+                return;
+            }
+
 
             if (EventSystem.current.IsPointerOverGameObject())
             {
                 if (ToBuild.activeSelf)
                 {
                     ToBuild.SetActive(false);
+                    return;
                 }
             }
             else if (!ToBuild.activeSelf)
             {
                 ToBuild.SetActive(true);
             }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                ToBuild.transform.Rotate(Vector3.up, 90);
+            }
+
+
+
+
             ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 1000f, Ground))
             {
@@ -50,9 +70,17 @@ public class BuildingPlacer : MonoBehaviour
                     if (buildingManager.hasValidPlacement)
                     {
                         buildingManager.SetPlacementMode(PlacementMode.Fixed);
-
-                        BuildingPrefab = null;
-                        ToBuild = null;
+                        BuildingSelectionManager.allBuildingsList.Add(ToBuild);
+                        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+                        {
+                            ToBuild = null;
+                            PrepareBuilding();
+                        }
+                        else
+                        {
+                            BuildingPrefab = null;
+                            ToBuild = null;
+                        }
                     }
                 }
             }
@@ -66,6 +94,7 @@ public class BuildingPlacer : MonoBehaviour
     {
         BuildingPrefab = prefab;
         PrepareBuilding();
+        EventSystem.current.SetSelectedGameObject(null);
     }
 
     private void PrepareBuilding()

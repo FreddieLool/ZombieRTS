@@ -9,7 +9,6 @@ using UnityEngine.Events;
 public class UnitSelectionManager : MonoBehaviour
 {
     [SerializeField] NavMeshAgent navMeshAgent;
-    [SerializeField] GameObject highlightRing;
     public LayerMask Clickable;
     public LayerMask Ground;
     public GameObject GroundMarker;
@@ -122,7 +121,7 @@ public class UnitSelectionManager : MonoBehaviour
 
     void TriggerSelectionIndicator(GameObject selectedUnit, bool isVisible)
     {
-        highlightRing.SetActive(isVisible);
+        selectedUnit.transform.GetChild(0).GetChild(0).gameObject.SetActive(isVisible);
     }
 
     internal void DragSelect(GameObject selectedUnit)
