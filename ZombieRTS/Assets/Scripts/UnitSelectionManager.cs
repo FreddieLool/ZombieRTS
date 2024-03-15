@@ -3,15 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class UnitSelectionManager : MonoBehaviour
 {
+    [SerializeField] NavMeshAgent navMeshAgent;
+    [SerializeField] GameObject highlightRing;
     public LayerMask Clickable;
     public LayerMask Ground;
     public GameObject GroundMarker;
     public List<GameObject> selectedUnits = new List<GameObject>();
     public List<GameObject> allUnitsList = new List<GameObject>();
-
+    public UnityEvent<float> speedChange;
     Camera mainCamera;
 
     public static UnitSelectionManager Instance { get; set; }
@@ -35,6 +39,7 @@ public class UnitSelectionManager : MonoBehaviour
 
     private void Update()
     {
+        //speedChange.Invoke(navMeshAgent.velocity.magnitude);
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
@@ -117,7 +122,7 @@ public class UnitSelectionManager : MonoBehaviour
 
     void TriggerSelectionIndicator(GameObject selectedUnit, bool isVisible)
     {
-        selectedUnit.transform.GetChild(0).gameObject.SetActive(isVisible);
+        highlightRing.SetActive(isVisible);
     }
 
     internal void DragSelect(GameObject selectedUnit)
