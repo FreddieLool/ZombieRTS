@@ -2508,7 +2508,7 @@ PrefabInstance:
     - target: {fileID: 6836711656879939576, guid: 482bf2c23042fb940951e124bf65202f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.44638968
+      value: -1.94
       objectReference: {fileID: 0}
     - target: {fileID: 6836711656879939576, guid: 482bf2c23042fb940951e124bf65202f,
         type: 3}
@@ -2518,7 +2518,7 @@ PrefabInstance:
     - target: {fileID: 6836711656879939576, guid: 482bf2c23042fb940951e124bf65202f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.36
+      value: -4.66
       objectReference: {fileID: 0}
     - target: {fileID: 6836711656879939576, guid: 482bf2c23042fb940951e124bf65202f,
         type: 3}
@@ -2945,6 +2945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConstructionUI: {fileID: 1731595425}
+  MouseOverUI: {fileID: 1731595429}
   Clickable:
     serializedVersion: 2
     m_Bits: 256
@@ -3081,6 +3082,7 @@ GameObject:
   - component: {fileID: 1731595426}
   - component: {fileID: 1731595428}
   - component: {fileID: 1731595427}
+  - component: {fileID: 1731595429}
   m_Layer: 5
   m_Name: UnitConstructionUI
   m_TagString: Untagged
@@ -3151,6 +3153,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1731595425}
   m_CullTransparentMesh: 1
+--- !u!114 &1731595429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731595425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5374911681ce4b348bb83e90d78b4d27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1814386778
 GameObject:
   m_ObjectHideFlags: 0
@@ -3185,7 +3199,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 669, y: 380}
+  m_AnchoredPosition: {x: 1007, y: 588}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1814386780
@@ -3535,7 +3549,7 @@ Terrain:
   m_DetailObjectDistance: 80
   m_DetailObjectDensity: 1
   m_HeightmapPixelError: 5
-  m_SplatMapDistance: 1000
+  m_SplatMapDistance: 1422
   m_HeightmapMaximumLOD: 0
   m_ShadowCastingMode: 2
   m_DrawHeightmap: 1
@@ -3544,7 +3558,7 @@ Terrain:
   m_StaticShadowCaster: 0
   m_IgnoreQualitySettings: 0
   m_ReflectionProbeUsage: 1
-  m_MaterialTemplate: {fileID: 2100000, guid: 594ea882c5a793440b60ff72d896021e, type: 2}
+  m_MaterialTemplate: {fileID: 2100000, guid: 54969dc903086634e8684490e3f658e2, type: 2}
   m_BakeLightProbesForTrees: 1
   m_PreserveTreePrototypeLayers: 0
   m_DeringLightProbesForTrees: 1
