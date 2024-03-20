@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 9094025398951617000}
   - component: {fileID: 2735508205117261077}
   - component: {fileID: -5172475923448265665}
-  - component: {fileID: -3120117381791253817}
   m_Layer: 8
   m_Name: Zombie_House_1
   m_TagString: Untagged
@@ -123,22 +122,6 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
---- !u!114 &-3120117381791253817
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4306317613535168101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 200858c6c9a01494d89911cd486e4a54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UnitPrefab: {fileID: 4854363371836294373, guid: 6f1296cd962c5284eb16a0eaba9e9b65,
-    type: 3}
-  spawnTimer: 1
-  poolSize: 5
 --- !u!1 &5255004692559961596
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,7 +131,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8117118546392041164}
-  - component: {fileID: 2375090961316559325}
   m_Layer: 0
   m_Name: UnitFlagSpawn
   m_TagString: Untagged
@@ -171,21 +153,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5281804379227972632}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2375090961316559325
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5255004692559961596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 200858c6c9a01494d89911cd486e4a54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UnitPrefab: {fileID: 0}
-  spawnTimer: 1
-  poolSize: 5
 --- !u!1 &7490668155175593674
 GameObject:
   m_ObjectHideFlags: 0

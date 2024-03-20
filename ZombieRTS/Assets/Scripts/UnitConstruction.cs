@@ -5,46 +5,81 @@ using UnityEngine;
 
 public class UnitConstruction : MonoBehaviour
 {
-    [SerializeField] GameObject UnitPrefab;
-    [SerializeField][Range(0.1f, 120f)] float spawnTimer = 1f;
-    [SerializeField][Range(0, 50)] int poolSize = 5;
-    GameObject[] pool;
+    [SerializeField] private GameObject[] unitPrefabs;
+    [SerializeField][Range(0.1f, 120f)] private float spawnTimer = 1f;
+    [SerializeField][Range(1, 50)] private int poolSize = 5;
+    public bool isEnemy;
+
+    private Dictionary<int, Queue<GameObject>> pools;
+
     private void Awake()
-    { 
-        PopulatePool();
-    }
-    void PopulatePool()
     {
-        pool = new GameObject[poolSize];
+        InitializePools();
+    }
 
-        for (int i = 0; i < pool.Length; i++)
+    private void InitializePools()
+    {
+        if (unitPrefabs == null)
         {
-            pool[i] = Instantiate(UnitPrefab, this.transform.GetChild(0).transform);
-            pool[i].SetActive(false);
+            Debug.LogError("UnitPrefabs array has not been set in the inspector.");
+            return;
         }
-    }
-    void Start()
-    {
-        StartCoroutine(SpawnEnemy());
-    }
 
-    void EnableObjectInPool()
-    {
-        for (int i = 0; i < pool.Length; i++)
+        pools = new Dictionary<int, Queue<GameObject>>();
+
+        for (int i = 0; i < unitPrefabs.Length; i++)
         {
-            if (pool[i].activeInHierarchy == false)
+            var unitPrefab = unitPrefabs[i];
+            if (unitPrefab == null)
             {
-                pool[i].SetActive(true);
-                return;
+                Debug.LogError($"Unit prefab at index {i} is not set.");
+                continue;
             }
+
+            Queue<GameObject> objectPool = new Queue<GameObject>();
+
+            for (int j = 0; j < poolSize; j++)
+            {
+                GameObject newObj = Instantiate(unitPrefab, transform);
+                newObj.SetActive(false);
+                objectPool.Enqueue(newObj);
+            }
+
+            pools.Add(i, objectPool);
         }
     }
-    IEnumerator SpawnEnemy()
+
+    public void SpawnUnit(int unitType)
     {
-        while (true)
+        if (pools == null || unitPrefabs == null)
         {
-            EnableObjectInPool();
-            yield return new WaitForSeconds(spawnTimer);
+            Debug.LogError("Pools or UnitPrefabs are not initialized.");
+            return;
+        }
+
+        if (unitType < 0 || unitType >= unitPrefabs.Length)
+        {
+            Debug.LogError($"Invalid unit type: {unitType}");
+            return;
+        }
+
+        if (!pools.ContainsKey(unitType))
+        {
+            Debug.LogError($"No pool associated with unit type: {unitType}");
+            return;
+        }
+
+        if (pools[unitType].Count > 0)
+        {
+            GameObject objectToSpawn = pools[unitType].Dequeue();
+            objectToSpawn.SetActive(true);
+
+            // Re-add the object to the queue to enable reuse when it gets deactivated again.
+            pools[unitType].Enqueue(objectToSpawn);
+        }
+        else
+        {
+            Debug.LogWarning($"All objects of type {unitType} are active.");
         }
     }
 }
