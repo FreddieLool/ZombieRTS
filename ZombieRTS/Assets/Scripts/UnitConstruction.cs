@@ -11,12 +11,18 @@ public class UnitConstruction : MonoBehaviour
     public bool isEnemy;
 
     private Dictionary<int, Queue<GameObject>> pools;
+    private float timeSinceLastSpawn; 
 
     private void Awake()
     {
         InitializePools();
-    }
+        timeSinceLastSpawn = 0; 
 
+    }
+    private void Update()
+    {
+        timeSinceLastSpawn += Time.deltaTime; // Update the timer every frame.
+    }
     private void InitializePools()
     {
         if (unitPrefabs == null)
@@ -76,6 +82,9 @@ public class UnitConstruction : MonoBehaviour
 
             // Re-add the object to the queue to enable reuse when it gets deactivated again.
             pools[unitType].Enqueue(objectToSpawn);
+
+            // Reset the timer as a unit has been successfully spawned
+            timeSinceLastSpawn = 0f;
         }
         else
         {
