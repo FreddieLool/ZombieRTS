@@ -13,8 +13,22 @@ public class BuildingSelectionManager : MonoBehaviour
     [SerializeField] MouseOverUI MouseOverUI;
     public LayerMask Clickable;
     public List<GameObject> allBuildingsList = new List<GameObject>();
+    public GameObject SelectedBuilding;
     private Camera mainCamera;
-    
+
+    public static BuildingSelectionManager Instance { get; set; }
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     // Start is called before the first frame update
     private void Start()
@@ -56,6 +70,7 @@ public class BuildingSelectionManager : MonoBehaviour
     {
         Deselect();
 
+        SelectedBuilding = selectedBuilding;
 
         TriggerSelectionIndicator(selectedBuilding, true);
         ConstructionUI.SetActive(true);

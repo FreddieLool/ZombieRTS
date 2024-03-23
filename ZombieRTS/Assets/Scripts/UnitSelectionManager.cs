@@ -5,17 +5,20 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using static UnityEngine.GraphicsBuffer;
 
 public class UnitSelectionManager : MonoBehaviour
 {
     [SerializeField] NavMeshAgent navMeshAgent;
     public LayerMask Clickable;
     public LayerMask Ground;
+    public LayerMask Attackble;
     public GameObject GroundMarker;
     public List<GameObject> selectedUnits = new List<GameObject>();
     public List<GameObject> allUnitsList = new List<GameObject>();
     public UnityEvent<float> speedChange;
-    Camera mainCamera;
+    private Camera mainCamera;
+    private bool attackCursorVisible;
 
     public static UnitSelectionManager Instance { get; set; }
 
@@ -77,7 +80,49 @@ public class UnitSelectionManager : MonoBehaviour
                 GroundMarker.SetActive(true);
             }
         }
+
+        if (selectedUnits.Count > 0 && AtLeastOneOffensiveUnit(selectedUnits))
+        {
+            RaycastHit hit;
+            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+            attackCursorVisible = true;
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, Attackble))
+            {
+                if (Input.GetMouseButtonDown(1))
+                {
+                    Transform target = hit.transform;
+
+                    foreach (GameObject unit in selectedUnits)
+                    {
+                        if (unit.GetComponent<AttackController>())
+                        {
+                            unit.GetComponent<AttackController>().Target = target;
+                        }
+                    }
+                }
+            }
+        }
+
+        else
+        {
+            attackCursorVisible = false;
+        }
     }
+
+    private bool AtLeastOneOffensiveUnit(List<GameObject> selectedUnits)
+    {
+        foreach (GameObject unit in selectedUnits)
+        {
+            if (unit.GetComponent<AttackController>())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     void SelectByClicking(GameObject selectedUnit)
     {
         DeselectAll();

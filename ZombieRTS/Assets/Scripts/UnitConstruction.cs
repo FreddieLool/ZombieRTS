@@ -16,8 +16,7 @@ public class UnitConstruction : MonoBehaviour
     private void Awake()
     {
         InitializePools();
-        timeSinceLastSpawn = 0; 
-
+        timeSinceLastSpawn = 0;
     }
     private void Update()
     {
@@ -75,9 +74,10 @@ public class UnitConstruction : MonoBehaviour
             return;
         }
 
-        if (pools[unitType].Count > 0)
+        if (pools[unitType].Count > 0 && timeSinceLastSpawn > spawnTimer)
         {
             GameObject objectToSpawn = pools[unitType].Dequeue();
+            objectToSpawn.transform.position = BuildingSelectionManager.Instance.SelectedBuilding.transform.position;
             objectToSpawn.SetActive(true);
 
             // Re-add the object to the queue to enable reuse when it gets deactivated again.

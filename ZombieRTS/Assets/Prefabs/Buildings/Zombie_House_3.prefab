@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5281804379227972632}
   - component: {fileID: 4933099353088654117}
+  - component: {fileID: 3288586954348054179}
   - component: {fileID: 9094025398951617000}
   - component: {fileID: 2735508205117261077}
   - component: {fileID: -7213923723323567262}
@@ -54,6 +55,27 @@ BoxCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0.66, z: 0}
+--- !u!65 &3288586954348054179
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4306317613535168101}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -249,9 +271,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 200858c6c9a01494d89911cd486e4a54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UnitPrefab: {fileID: 0}
+  unitPrefabs: []
   spawnTimer: 1
   poolSize: 5
+  isEnemy: 0
 --- !u!1001 &2477553576314785119
 PrefabInstance:
   m_ObjectHideFlags: 0
