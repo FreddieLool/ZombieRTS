@@ -16,7 +16,6 @@ public class UnitSelectionManager : MonoBehaviour
     public GameObject GroundMarker;
     public List<GameObject> selectedUnits = new List<GameObject>();
     public List<GameObject> allUnitsList = new List<GameObject>();
-    public UnityEvent<float> speedChange;
     private Camera mainCamera;
     private bool attackCursorVisible;
 

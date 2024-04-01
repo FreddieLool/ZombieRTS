@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7737330016631623408}
   - component: {fileID: -4243820702631371138}
   - component: {fileID: -2009118304069574967}
+  - component: {fileID: -5094737434181711804}
   m_Layer: 7
   m_Name: Zombie_Doctor
   m_TagString: Untagged
@@ -98,6 +99,10 @@ MonoBehaviour:
   ground:
     serializedVersion: 2
     m_Bits: 64
+  isCommandedToMove: 0
+  startedWalking:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &8273030607598218368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +170,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 10
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-5094737434181711804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4854363371836294373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d081b48c16e119d4786baf812b380a0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 7737330016631623408}
+  script: {fileID: 8942810986188686138}
 --- !u!1001 &2884455698919573035
 PrefabInstance:
   m_ObjectHideFlags: 0

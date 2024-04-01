@@ -18,24 +18,24 @@ public class DoctorWalkingState : StateMachineBehaviour
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (attackController.Target == null)
+        if (attackController.Target == null && animator.transform.GetComponent<UnitController>().isCommandedToMove == false)
         {
             animator.SetBool("isWalking", false);
         }
+        else
+        {
+            if (animator.transform.GetComponent<UnitController>().isCommandedToMove == false)
+            {
+                navMeshAgent.SetDestination(attackController.Target.position);
+                navMeshAgent.transform.LookAt(attackController.Target.position);
 
-        navMeshAgent.SetDestination(attackController.Target.position);
-        navMeshAgent.transform.LookAt(attackController.Target.position);
-
-        //float distanceFromTarget = Vector3.Distance(attackController.Target.position, animator.transform.position);
-        //if (distanceFromTarget < AttackingDistance)
-        //{
-        //    animator.SetBool("isAttacking", true);
-        //}
+                //float distanceFromTarget = Vector3.Distance(attackController.Target.position, animator.transform.position);
+                //if (distanceFromTarget < AttackingDistance)
+                //{
+                //navMeshAgent.SetDestination(animator.transform.position);
+                //    animator.SetBool("isAttacking", true);
+                //}
+            }
+        }
     }
-
-    public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        navMeshAgent.SetDestination(animator.transform.position);
-    }
-
 }

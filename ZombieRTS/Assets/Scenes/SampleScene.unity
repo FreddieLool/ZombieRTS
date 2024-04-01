@@ -1227,6 +1227,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4522585395050091025, guid: 6f1296cd962c5284eb16a0eaba9e9b65,
         type: 3}
+      propertyPath: m_Speed
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4522585395050091025, guid: 6f1296cd962c5284eb16a0eaba9e9b65,
+        type: 3}
       propertyPath: m_StoppingDistance
       value: 2.5
       objectReference: {fileID: 0}
@@ -3150,9 +3155,6 @@ MonoBehaviour:
   GroundMarker: {fileID: 346531284}
   selectedUnits: []
   allUnitsList: []
-  speedChange:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1692594787
 MonoBehaviour:
   m_ObjectHideFlags: 0
