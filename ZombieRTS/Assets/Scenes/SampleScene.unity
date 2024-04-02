@@ -906,7 +906,7 @@ MonoBehaviour:
         m_MethodName: SetBuildingPrefab
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 4306317613535168101, guid: 5db9c5e0d7221ee469c5705dea719f1f,
+          m_ObjectArgument: {fileID: 2154823555089990480, guid: 55409e0add0718641a85d7e1f86d76ed,
             type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
@@ -3744,6 +3744,7 @@ GameObject:
   - component: {fileID: 2067419879}
   - component: {fileID: 2067419878}
   - component: {fileID: 2067419881}
+  - component: {fileID: 2067419882}
   m_Layer: 6
   m_Name: Terrain
   m_TagString: Untagged
@@ -3856,6 +3857,18 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 9fcc073f8710d054d86f0ab69f5c0e0a, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &2067419882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067419877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9de0700c3bcca2445bbf18236d37b74b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
