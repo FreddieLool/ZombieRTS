@@ -180,7 +180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Biohazard
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -285,9 +285,9 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 60012491}
   - {fileID: 447943302}
   - {fileID: 201389892}
-  - {fileID: 60012491}
   m_Father: {fileID: 1892778005}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
@@ -352,7 +352,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Bone Pile
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -442,7 +442,7 @@ GameObject:
   - component: {fileID: 60012493}
   - component: {fileID: 60012492}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: Zombie_House
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -457,7 +457,7 @@ RectTransform:
   m_GameObject: {fileID: 60012490}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.4242, y: 1.4242, z: 1.4242}
+  m_LocalScale: {x: 1.4242, y: 1.3885951, z: 1.4242}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 500303413}
@@ -465,7 +465,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -117.49646, y: 176.5566}
+  m_AnchoredPosition: {x: -117.49646, y: 254.5}
   m_SizeDelta: {x: 165, y: 46}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &60012492
@@ -831,7 +831,7 @@ GameObject:
   - component: {fileID: 201389894}
   - component: {fileID: 201389893}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Biohazard_Barrels
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -846,7 +846,7 @@ RectTransform:
   m_GameObject: {fileID: 201389891}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.4242, y: 1.4242, z: 1.4242}
+  m_LocalScale: {x: 1.4242, y: 1.3885951, z: 1.4242}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 22971005}
@@ -854,7 +854,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -117.49646, y: 104.15659}
+  m_AnchoredPosition: {x: -117.49646, y: 106.77}
   m_SizeDelta: {x: 165, y: 46}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &201389893
@@ -1688,7 +1688,7 @@ GameObject:
   - component: {fileID: 447943304}
   - component: {fileID: 447943303}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Bone_Pile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1703,7 +1703,7 @@ RectTransform:
   m_GameObject: {fileID: 447943301}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.4242, y: 1.4242, z: 1.4242}
+  m_LocalScale: {x: 1.4242, y: 1.3885951, z: 1.4242}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 49267468}
@@ -1711,7 +1711,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -117.49646, y: 32.75659}
+  m_AnchoredPosition: {x: -117.49646, y: 179.7}
   m_SizeDelta: {x: 165, y: 46}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &447943303
@@ -1763,7 +1763,7 @@ MonoBehaviour:
         m_MethodName: SetBuildingPrefab
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 4306317613535168101, guid: 13aae4d4c7f079d43bfff29cc457d0e9,
+          m_ObjectArgument: {fileID: 501482191394279660, guid: 6a2251cbabf0bb44194eb963876109fc,
             type: 3}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
@@ -1981,7 +1981,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Zombie House
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2632,6 +2632,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 482bf2c23042fb940951e124bf65202f, type: 3}
+--- !u!1 &1316455500
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1316455501}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1316455501
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316455500}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 83.6, y: 3.06, z: 82.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1458345357
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3742,7 +3773,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2067419880}
   - component: {fileID: 2067419879}
-  - component: {fileID: 2067419878}
+  - component: {fileID: 2067419883}
   - component: {fileID: 2067419881}
   - component: {fileID: 2067419882}
   m_Layer: 6
@@ -3752,26 +3783,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
---- !u!154 &2067419878
-TerrainCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2067419877}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_TerrainData: {fileID: 15600000, guid: 3a9ca5bffbf9aab49936f2638f87fcc3, type: 2}
-  m_EnableTreeColliders: 1
 --- !u!218 &2067419879
 Terrain:
   m_ObjectHideFlags: 0
@@ -3869,19 +3880,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9de0700c3bcca2445bbf18236d37b74b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!154 &2067419883
+TerrainCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067419877}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_TerrainData: {fileID: 15600000, guid: 3a9ca5bffbf9aab49936f2638f87fcc3, type: 2}
+  m_EnableTreeColliders: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1571549838}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 2067419880}
-  - {fileID: 1692594785}
   - {fileID: 1290038907}
   - {fileID: 1892778005}
   - {fileID: 982918794}
-  - {fileID: 1571549838}
-  - {fileID: 476194340}
-  - {fileID: 1841256586}
   - {fileID: 302946580}
   - {fileID: 1458345357}
+  - {fileID: 1316455501}
+  - {fileID: 476194340}
+  - {fileID: 1841256586}
+  - {fileID: 1692594785}

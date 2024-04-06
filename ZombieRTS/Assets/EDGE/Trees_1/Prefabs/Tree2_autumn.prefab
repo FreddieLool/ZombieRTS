@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8763357614917187369}
   - component: {fileID: 917337432760960772}
   - component: {fileID: -3494382207244793276}
+  - component: {fileID: -1627340577272882292}
   m_Layer: 0
   m_Name: Tree2_autumn
   m_TagString: Untagged
@@ -108,6 +109,27 @@ MeshCollider:
   m_CookingOptions: 30
   m_Mesh: {fileID: -8651554832475829348, guid: 4ea280423cccdfc41b0c21250ca8edee, type: 3}
 --- !u!65 &-3494382207244793276
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7590501982292961628}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.2567997, y: 7.1526403, z: 3.2568007}
+  m_Center: {x: -0.00006532669, y: 3.5763202, z: -0.0000628829}
+--- !u!65 &-1627340577272882292
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
