@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class BuildingPlacer : MonoBehaviour
 {
+    [SerializeField] BuildingSelectionManager BuildingSelectionManager;
     public static BuildingPlacer Instance { get; set; }
     public LayerMask Ground;
-    [SerializeField] BuildingSelectionManager BuildingSelectionManager;
 
     GameObject BuildingPrefab;
     GameObject ToBuild;

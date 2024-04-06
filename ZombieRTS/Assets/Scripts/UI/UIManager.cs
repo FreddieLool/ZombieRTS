@@ -3,7 +3,8 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] GameObject buildingUI;
-
+    [SerializeField] TMPro.TextMeshProUGUI BoneResource;
+    [SerializeField] TMPro.TextMeshProUGUI BiohazardResource;
 
     private void Update()
     {
@@ -21,5 +22,7 @@ public class UIManager : MonoBehaviour
                 buildingUI.SetActive(false);
             }
         }
+        BoneResource.text = Bone_Factory.totalBones.ToString();
+        BiohazardResource.text = Biohazard_Factory.totalBiohazard.ToString();
     }
 }
