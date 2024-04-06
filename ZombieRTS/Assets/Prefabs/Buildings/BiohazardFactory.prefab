@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 8309910385190125590}
   - component: {fileID: 471376969114778912}
   - component: {fileID: 1065735587928468791}
+  - component: {fileID: 5707311987884259530}
   m_Layer: 0
   m_Name: BiohazardFactory
   m_TagString: Untagged
@@ -247,12 +248,24 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 3.05, y: 2.18, z: 3.92}
   m_Center: {x: -0.23, y: 0.84, z: -0.62}
+--- !u!114 &5707311987884259530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2154823555089990480}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c8d72d4b3f4ac44d80de779bb623729, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1385258028427194177
 PrefabInstance:
   m_ObjectHideFlags: 0
