@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 8813171135027634566}
   - component: {fileID: 5044631043215860239}
   - component: {fileID: 611445564094298603}
-  - component: {fileID: 6294840819650580322}
-  - component: {fileID: 5369792631473482112}
   - component: {fileID: -8988789547065770838}
+  - component: {fileID: -2630823211365309895}
   m_Layer: 0
   m_Name: Tree11_winter
   m_TagString: Untagged
@@ -86,49 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6294840819650580322
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8068507604588201748}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5195791131955353534, guid: 4ea280423cccdfc41b0c21250ca8edee, type: 3}
---- !u!65 &5369792631473482112
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8068507604588201748}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.4635111, y: 6.5200114, z: 0.47884846}
-  m_Center: {x: 0.010918431, y: 3.2597935, z: 0}
 --- !u!65 &-8988789547065770838
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -150,3 +106,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.4635111, y: 6.5200114, z: 0.47884846}
   m_Center: {x: 0.010918431, y: 3.2597935, z: 0}
+--- !u!208 &-2630823211365309895
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8068507604588201748}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.23200001, y: 3.2600002, z: 0.23900001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.011000001, y: 3.2600002, z: 0}
+  m_TimeToStationary: 0.5

@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 9070872454999151156}
   - component: {fileID: 7542348366397271216}
   - component: {fileID: 5807375748152406233}
-  - component: {fileID: 678913696787274433}
-  - component: {fileID: 7194847022814749031}
   - component: {fileID: -1519350308142005103}
+  - component: {fileID: 5800889041084054101}
   m_Layer: 0
   m_Name: Tree9_autumn
   m_TagString: Untagged
@@ -86,49 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &678913696787274433
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6119698401229253882}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 2782439492659247306, guid: 4ea280423cccdfc41b0c21250ca8edee, type: 3}
---- !u!65 &7194847022814749031
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6119698401229253882}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3.1411006, y: 6.427693, z: 2.9416647}
-  m_Center: {x: 0.05754471, y: 3.2136471, z: -0.060416162}
 --- !u!65 &-1519350308142005103
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -150,3 +106,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.1411006, y: 6.427693, z: 2.9416647}
   m_Center: {x: 0.05754471, y: 3.2136471, z: -0.060416162}
+--- !u!208 &5800889041084054101
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6119698401229253882}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.5710001, y: 3.2140002, z: 1.4710001}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.058000002, y: 3.2140002, z: -0.060000002}
+  m_TimeToStationary: 0.5

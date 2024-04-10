@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 8851368773519531146}
   - component: {fileID: 1207567709922536771}
   - component: {fileID: 5096036090147930175}
-  - component: {fileID: 4426017475738977966}
   - component: {fileID: 6565848813781402011}
-  - component: {fileID: -1223608904623327087}
+  - component: {fileID: 7237407862970153355}
   m_Layer: 0
   m_Name: Tree8_autumn
   m_TagString: Untagged
@@ -86,28 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4426017475738977966
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6240495879082400}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -3704834845269576775, guid: 4ea280423cccdfc41b0c21250ca8edee, type: 3}
 --- !u!65 &6565848813781402011
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -129,24 +106,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5.467078, y: 8.761501, z: 5.3413277}
   m_Center: {x: 0.049232244, y: 4.3807507, z: 0.061585307}
---- !u!65 &-1223608904623327087
-BoxCollider:
+--- !u!208 &7237407862970153355
+NavMeshObstacle:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6240495879082400}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 5.467078, y: 8.761501, z: 5.3413277}
-  m_Center: {x: 0.049232244, y: 4.3807507, z: 0.061585307}
+  m_Shape: 1
+  m_Extents: {x: 2.7340002, y: 4.381, z: 2.6710002}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.049000002, y: 4.381, z: 0.062000003}
+  m_TimeToStationary: 0.5

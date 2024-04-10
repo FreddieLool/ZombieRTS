@@ -11,9 +11,8 @@ GameObject:
   - component: {fileID: 8203923158810412978}
   - component: {fileID: 9013016183395048301}
   - component: {fileID: 4859756102025941706}
-  - component: {fileID: 4953745997275036455}
-  - component: {fileID: -3851191556168278471}
   - component: {fileID: 2097463969964610496}
+  - component: {fileID: 7704556435404993063}
   m_Layer: 0
   m_Name: Stump1
   m_TagString: Untagged
@@ -86,49 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4953745997275036455
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1803992565761805956}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3162617186355635441, guid: 4ea280423cccdfc41b0c21250ca8edee, type: 3}
---- !u!65 &-3851191556168278471
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1803992565761805956}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.9217415, y: 0.6127451, z: 0.8888604}
-  m_Center: {x: 0.000000461936, y: 0.3063725, z: 0.00000047683716}
 --- !u!65 &2097463969964610496
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -150,3 +106,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.9217415, y: 0.6127451, z: 0.8888604}
   m_Center: {x: 0.000000461936, y: 0.3063725, z: 0.00000047683716}
+--- !u!208 &7704556435404993063
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803992565761805956}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.46100003, y: 0.30600002, z: 0.44400004}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.30600002, z: 0}
+  m_TimeToStationary: 0.5

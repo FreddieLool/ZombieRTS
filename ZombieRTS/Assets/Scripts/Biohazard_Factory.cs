@@ -5,20 +5,17 @@ using UnityEngine.Events;
 
 public  class Biohazard_Factory : MonoBehaviour
 {
-    public static int totalBiohazard = 0;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-        StartCoroutine(generateBiohazard());
+        InvokeRepeating("generateBiohazard",15,15);
     }
 
-    IEnumerator generateBiohazard()
+    private void  generateBiohazard()
     {
-        yield return new WaitForSeconds(10);
-        totalBiohazard += 30;
+        ResourceManager.totalBiohazard += 30;
 
-        StartCoroutine(generateBiohazard());
     }
 
 

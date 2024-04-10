@@ -9,7 +9,9 @@ public class UnitConstruction : MonoBehaviour
     [SerializeField][Range(0.1f, 120f)] private float spawnTimer = 1f;
     [SerializeField][Range(1, 50)] private int poolSize = 5;
     public bool isEnemy;
-
+    public UnitScriptableObject[] allUnitCosts;
+    private int biohazardCost;
+    private int bonesCost;
     private Dictionary<int, Queue<GameObject>> pools;
     private float timeSinceLastSpawn; 
 
@@ -34,7 +36,9 @@ public class UnitConstruction : MonoBehaviour
 
         for (int i = 0; i < unitPrefabs.Length; i++)
         {
-            var unitPrefab = unitPrefabs[i];
+            var unitPrefab = allUnitCosts[i].unitPrefab;
+            biohazardCost = allUnitCosts[i].biohazardCost;
+            bonesCost = allUnitCosts[i].bonesCost;
             if (unitPrefab == null)
             {
                 Debug.LogError($"Unit prefab at index {i} is not set.");
@@ -74,10 +78,11 @@ public class UnitConstruction : MonoBehaviour
             return;
         }
 
-        if (pools[unitType].Count > 0 && timeSinceLastSpawn > spawnTimer)
+        if (pools[unitType].Count > 0 && timeSinceLastSpawn > spawnTimer && ResourceManager.Instance.HasEnoughResources(bonesCost, biohazardCost))
         {
             GameObject objectToSpawn = pools[unitType].Dequeue();
             objectToSpawn.transform.position = BuildingSelectionManager.Instance.SelectedBuilding.transform.position;
+            ResourceManager.Instance.SpendResources(bonesCost, biohazardCost);
             objectToSpawn.SetActive(true);
 
             // Re-add the object to the queue to enable reuse when it gets deactivated again.

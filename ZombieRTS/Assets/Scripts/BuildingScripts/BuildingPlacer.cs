@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -5,9 +6,11 @@ using UnityEngine.EventSystems;
 public class BuildingPlacer : MonoBehaviour
 {
     [SerializeField] BuildingSelectionManager BuildingSelectionManager;
+    public BuildingScriptableObject[] allBuildingCosts;
     public static BuildingPlacer Instance { get; set; }
     public LayerMask Ground;
-
+    int biohazardCost;
+    int bonesCost;
     GameObject BuildingPrefab;
     GameObject ToBuild;
     Camera mainCamera;
@@ -53,9 +56,6 @@ public class BuildingPlacer : MonoBehaviour
                 ToBuild.transform.Rotate(Vector3.up, 90);
             }
 
-
-
-
             ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, 1000f, Ground))
             {
@@ -68,8 +68,10 @@ public class BuildingPlacer : MonoBehaviour
                 if (Input.GetMouseButtonDown(0))
                 {
                     BuildingManager buildingManager = ToBuild.GetComponent<BuildingManager>();
-                    if (buildingManager.hasValidPlacement)
+
+                    if (buildingManager.hasValidPlacement && ResourceManager.Instance.HasEnoughResources(bonesCost, biohazardCost))
                     {
+                        ResourceManager.Instance.SpendResources(bonesCost, biohazardCost);
                         buildingManager.SetPlacementMode(PlacementMode.Fixed);
                         BuildingSelectionManager.allBuildingsList.Add(ToBuild);
                         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
@@ -91,11 +93,16 @@ public class BuildingPlacer : MonoBehaviour
             }
         }
     }
-    public void SetBuildingPrefab(GameObject prefab)
+
+    public void SetBuildingPrefab(BuildingScriptableObject buildingData)
     {
-        BuildingPrefab = prefab;
-        PrepareBuilding();
-        EventSystem.current.SetSelectedGameObject(null);
+        if (buildingData.buildingPrefab != null)
+        {
+            BuildingPrefab = buildingData.buildingPrefab;
+            bonesCost = buildingData.bonesCost;
+            biohazardCost = buildingData.biohazardCost;
+            PrepareBuilding();
+        }
     }
 
     private void PrepareBuilding()

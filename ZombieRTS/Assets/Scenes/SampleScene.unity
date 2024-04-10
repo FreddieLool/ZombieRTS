@@ -441,6 +441,7 @@ GameObject:
   - component: {fileID: 60012494}
   - component: {fileID: 60012493}
   - component: {fileID: 60012492}
+  - component: {fileID: 60012495}
   m_Layer: 5
   m_Name: Zombie_House
   m_TagString: Untagged
@@ -512,14 +513,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 476194339}
-        m_TargetAssemblyTypeName: BuildingPlacer, Assembly-CSharp
-        m_MethodName: SetBuildingPrefab
-        m_Mode: 2
+      - m_Target: {fileID: 60012495}
+        m_TargetAssemblyTypeName: BuildingButton, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 4306317613535168101, guid: feee4bfb722b4264995509a134df4902,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -563,6 +563,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 60012490}
   m_CullTransparentMesh: 1
+--- !u!114 &60012495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 60012490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4611235232d775841a9ead1a555c574f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingData: {fileID: 11400000, guid: 698bcf53ffcf33645859b214ebff7d34, type: 2}
 --- !u!1 &149802994
 GameObject:
   m_ObjectHideFlags: 0
@@ -830,6 +843,7 @@ GameObject:
   - component: {fileID: 201389895}
   - component: {fileID: 201389894}
   - component: {fileID: 201389893}
+  - component: {fileID: 201389896}
   m_Layer: 5
   m_Name: Biohazard_Barrels
   m_TagString: Untagged
@@ -901,14 +915,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 476194339}
-        m_TargetAssemblyTypeName: BuildingPlacer, Assembly-CSharp
-        m_MethodName: SetBuildingPrefab
-        m_Mode: 2
+      - m_Target: {fileID: 201389896}
+        m_TargetAssemblyTypeName: BuildingButton, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 2154823555089990480, guid: 55409e0add0718641a85d7e1f86d76ed,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -952,6 +965,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 201389891}
   m_CullTransparentMesh: 1
+--- !u!114 &201389896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201389891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4611235232d775841a9ead1a555c574f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingData: {fileID: 11400000, guid: d2484ca9781a5e54c84dc42cb02c56e4, type: 2}
 --- !u!1 &260003709
 GameObject:
   m_ObjectHideFlags: 0
@@ -1687,6 +1713,7 @@ GameObject:
   - component: {fileID: 447943305}
   - component: {fileID: 447943304}
   - component: {fileID: 447943303}
+  - component: {fileID: 447943306}
   m_Layer: 5
   m_Name: Bone_Pile
   m_TagString: Untagged
@@ -1758,14 +1785,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 476194339}
-        m_TargetAssemblyTypeName: BuildingPlacer, Assembly-CSharp
-        m_MethodName: SetBuildingPrefab
-        m_Mode: 2
+      - m_Target: {fileID: 447943306}
+        m_TargetAssemblyTypeName: BuildingButton, Assembly-CSharp
+        m_MethodName: OnButtonPress
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 501482191394279660, guid: 6a2251cbabf0bb44194eb963876109fc,
-            type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1809,6 +1835,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 447943301}
   m_CullTransparentMesh: 1
+--- !u!114 &447943306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447943301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4611235232d775841a9ead1a555c574f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildingData: {fileID: 11400000, guid: 24f9acc84ad1db74f957564921a11dd1, type: 2}
 --- !u!1 &456493424 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 241a2e6378e9dd6468c71a788aae9142,
@@ -1906,6 +1945,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BuildingSelectionManager: {fileID: 1692594787}
+  allBuildingCosts:
+  - {fileID: 11400000, guid: d2484ca9781a5e54c84dc42cb02c56e4, type: 2}
+  - {fileID: 11400000, guid: 24f9acc84ad1db74f957564921a11dd1, type: 2}
+  - {fileID: 11400000, guid: 698bcf53ffcf33645859b214ebff7d34, type: 2}
   Ground:
     serializedVersion: 2
     m_Bits: 64
@@ -3077,7 +3120,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1316455500}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95f135e2a689f3941bc3a2e67f52bb99, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e5fc17fabe989447ae4755abadf5821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1458345357
@@ -4034,6 +4077,8 @@ MonoBehaviour:
   spawnTimer: 5
   poolSize: 15
   isEnemy: 0
+  allUnitCosts:
+  - {fileID: 11400000, guid: 0a9454b6ba8fc2a4498271832730e709, type: 2}
 --- !u!4 &1841256586
 Transform:
   m_ObjectHideFlags: 0

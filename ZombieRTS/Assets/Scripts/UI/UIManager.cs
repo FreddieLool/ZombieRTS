@@ -22,7 +22,7 @@ public class UIManager : MonoBehaviour
                 buildingUI.SetActive(false);
             }
         }
-        BoneResource.text = Bone_Factory.totalBones.ToString();
-        BiohazardResource.text = Biohazard_Factory.totalBiohazard.ToString();
+        BoneResource.text = ResourceManager.totalBones.ToString();
+        BiohazardResource.text = ResourceManager.totalBiohazard.ToString();
     }
 }

@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 1065735587928468791}
   - component: {fileID: 5707311987884259530}
   m_Layer: 0
-  m_Name: BiohazardFactory
+  m_Name: Biohazard_Factory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

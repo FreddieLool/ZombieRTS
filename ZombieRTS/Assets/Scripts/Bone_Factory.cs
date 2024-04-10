@@ -5,18 +5,14 @@ using UnityEngine.Events;
 
 public class Bone_Factory : MonoBehaviour
 {
-    public static int totalBones = 0;
-
     // Start is called before the first frame update
     void Awake()
     {
-        StartCoroutine(generateBones());
+        InvokeRepeating("generateBones", 10, 10);
     }
 
-    IEnumerator generateBones()
+    void generateBones()
     {
-        yield return new WaitForSeconds(5);
-        totalBones += 10;
-        StartCoroutine(generateBones());
+        ResourceManager.totalBones += 10;
     }
 }
