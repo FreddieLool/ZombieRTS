@@ -22,7 +22,7 @@ public class BuildingPlacer : MonoBehaviour
         HandleBuildingPlacement();
     }
 
-    // Handles all building placement logic & input checks
+    // Handles all building placement logic, including input checks.
     private void HandleBuildingPlacement()
     {
         if (buildingPrefab == null) return;
@@ -33,7 +33,7 @@ public class BuildingPlacer : MonoBehaviour
         PlaceBuildingOnGround();
     }
 
-    // Destroys the building object if right-clicked to cancel placement
+    // Destroys the building object if right-clicked to cancel placement.
     private void HandleRightClickCancellation()
     {
         if (Input.GetMouseButtonDown(1))
@@ -57,7 +57,7 @@ public class BuildingPlacer : MonoBehaviour
         }
     }
 
-    // Allows rotation of the building objects
+    // Allows rotation of the building object using the 'R' key.
     private void RotateBuildingOnInput()
     {
         if (Input.GetKeyDown(KeyCode.R))
@@ -66,7 +66,7 @@ public class BuildingPlacer : MonoBehaviour
         }
     }
 
-    // Handles the placement of the building object on the ground
+    // Handles the placement of the building object on the ground.
     private void PlaceBuildingOnGround()
     {
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -106,7 +106,7 @@ public class BuildingPlacer : MonoBehaviour
         }
     }
 
-    // Sets the building prefab to use for placement
+    // Sets the building prefab to use for placement.
     public void SetBuildingPrefab(GameObject prefab)
     {
         buildingPrefab = prefab;
@@ -114,7 +114,7 @@ public class BuildingPlacer : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
     }
 
-    // Prepares a new building for placement
+    // Prepares a new building for placement.
     private void PrepareBuilding()
     {
         if (toBuild) Destroy(toBuild);

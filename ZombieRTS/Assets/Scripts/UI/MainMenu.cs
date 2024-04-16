@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MainMenu : MonoBehaviour
 {
@@ -130,7 +130,7 @@ public class MainMenu : MonoBehaviour
 
     private void OnHoverEnter(Button button, Color color)
     {
-        button.image.color = color; 
+        button.image.color = color;
         PlayHoverSound();
     }
 
@@ -182,7 +182,7 @@ public class MainMenu : MonoBehaviour
 
     private void ResetButtonColors()
     {
-        playButton.image.color = Color.black; 
+        playButton.image.color = Color.black;
         settingsButton.image.color = Color.black;
         creditsButton.image.color = Color.black;
         creditsBackButton.image.color = Color.black;

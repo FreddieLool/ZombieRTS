@@ -1,14 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Patrol : MonoBehaviour
 {
-    public float speed = 5.0f; 
+    public float speed = 5.0f;
 
     private bool movingForward = true;
     private float timer = 0.0f;
-    private float switchDirectionTime = 5.0f; 
+    private float switchDirectionTime = 5.0f;
 
     void Update()
     {

@@ -1,6 +1,5 @@
-﻿using UnityEngine;
-using System.Collections;
-using TMPro;
+﻿using TMPro;
+using UnityEngine;
 
 
 public class AdjustTimeScale : MonoBehaviour
@@ -20,14 +19,14 @@ public class AdjustTimeScale : MonoBehaviour
             {
                 Time.timeScale += 0.1f;
             }
-               
+
             Time.fixedDeltaTime = 0.02F * Time.timeScale;
 
             if (textMesh != null)
             {
                 textMesh.text = "Time Scale : " + System.Math.Round(Time.timeScale, 2);
             }
-          
+
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
         {
@@ -35,7 +34,7 @@ public class AdjustTimeScale : MonoBehaviour
             {
                 Time.timeScale -= 0.1f;
             }
-                
+
             Time.fixedDeltaTime = 0.02F * Time.timeScale;
 
             if (textMesh != null)

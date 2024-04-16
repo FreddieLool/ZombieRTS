@@ -1,9 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
-public  class Biohazard_Factory : MonoBehaviour
+public class Biohazard_Factory : MonoBehaviour
 {
     public static int totalBiohazard = 0;
 
