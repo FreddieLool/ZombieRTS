@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
+// To manage interactions and differentiate between mouse on UI or game.
 public class MouseOverUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private bool isMouseOver = false;

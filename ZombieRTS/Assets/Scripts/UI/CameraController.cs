@@ -25,9 +25,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] bool moveWithMouseDrag;
 
     [Header("Keyboard Movement")]
-    [SerializeField] float fastSpeed = 0.05f;
-    [SerializeField] float normalSpeed = 0.01f;
-    [SerializeField] float movementSensitivity = 1f; // Hardcoded Sensitivity
+    [SerializeField] float fastSpeed = 20f;
+    [SerializeField] float normalSpeed = 1f;
+    [SerializeField] float movementSensitivity = 10f; // Hardcoded Sensitivity
     float movementSpeed;
 
     [Header("Edge Scrolling Movement")]
@@ -98,19 +98,19 @@ public class CameraController : MonoBehaviour
 
             if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             {
-                newPosition += (transform.forward * movementSpeed);
+                newPosition += (transform.forward * movementSpeed) * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
             {
-                newPosition += (transform.forward * -movementSpeed);
+                newPosition += (transform.forward * -movementSpeed) * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
             {
-                newPosition += (transform.right * movementSpeed);
+                newPosition += (transform.right * movementSpeed) * Time.deltaTime;
             }
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
             {
-                newPosition += (transform.right * -movementSpeed);
+                newPosition += (transform.right * -movementSpeed) * Time.deltaTime;
             }
         }
 
@@ -121,7 +121,7 @@ public class CameraController : MonoBehaviour
             // Move Right
             if (Input.mousePosition.x > Screen.width - edgeSize)
             {
-                newPosition += (transform.right * movementSpeed);
+                newPosition += (transform.right * movementSpeed) * Time.deltaTime;
                 ChangeCursor(CursorArrow.RIGHT);
                 isCursorSet = true;
             }
@@ -129,7 +129,7 @@ public class CameraController : MonoBehaviour
             // Move Left
             else if (Input.mousePosition.x < edgeSize)
             {
-                newPosition += (transform.right * -movementSpeed);
+                newPosition += (transform.right * -movementSpeed) * Time.deltaTime;
                 ChangeCursor(CursorArrow.LEFT);
                 isCursorSet = true;
             }
@@ -137,7 +137,7 @@ public class CameraController : MonoBehaviour
             // Move Up
             else if (Input.mousePosition.y > Screen.height - edgeSize)
             {
-                newPosition += (transform.forward * movementSpeed);
+                newPosition += (transform.forward * movementSpeed) * Time.deltaTime;
                 ChangeCursor(CursorArrow.UP);
                 isCursorSet = true;
             }
@@ -145,7 +145,7 @@ public class CameraController : MonoBehaviour
             // Move Down
             else if (Input.mousePosition.y < edgeSize)
             {
-                newPosition += (transform.forward * -movementSpeed);
+                newPosition += (transform.forward * -movementSpeed) * Time.deltaTime;
                 ChangeCursor(CursorArrow.DOWN);
                 isCursorSet = true;
             }

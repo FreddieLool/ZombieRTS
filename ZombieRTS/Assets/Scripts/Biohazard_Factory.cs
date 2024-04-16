@@ -20,6 +20,4 @@ public  class Biohazard_Factory : MonoBehaviour
 
         StartCoroutine(generateBiohazard());
     }
-
-
 }

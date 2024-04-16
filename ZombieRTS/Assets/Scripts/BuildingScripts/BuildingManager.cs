@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,120 +7,96 @@ public enum PlacementMode
     Valid,
     Invalid
 }
+
 public class BuildingManager : MonoBehaviour
 {
+    [SerializeField] private Material validPlacementMaterial;
+    [SerializeField] private Material invalidPlacementMaterial;
+    [SerializeField] private MeshRenderer[] meshComponents;
 
-    public Material validPlacementMaterial;
-    public Material invalidPlacementMaterial;
-
-    public MeshRenderer[] meshComponents;
-    private Dictionary<MeshRenderer, List<Material>> initialMaterials;
+    private Dictionary<MeshRenderer, List<Material>> initialMaterials = new Dictionary<MeshRenderer, List<Material>>();
 
     [HideInInspector] public bool hasValidPlacement;
     [HideInInspector] public bool isFixed;
 
-    private int _nObstacles;
+    private int obstacleCount;
 
+    // Initialize component state and materials.
     private void Awake()
     {
         hasValidPlacement = true;
         isFixed = true;
-        _nObstacles = 0;
-
-        _InitializeMaterials();
+        obstacleCount = 0;
+        InitializeMaterials();
     }
 
+    // Check for collisions with non-ground objects to manage placement validity
+    // todo: check for trees, and only build on ground.
     private void OnTriggerEnter(Collider other)
     {
-        if (isFixed) return;
+        if (isFixed || IsGround(other.gameObject)) return;
 
-        // ignore ground objects
-        if (_IsGround(other.gameObject)) return;
-
-        _nObstacles++;
-        SetPlacementMode(PlacementMode.Invalid);
+        obstacleCount++;
+        UpdatePlacementMode(PlacementMode.Invalid);
     }
 
+    // Check for objects exiting the trigger to validate placement
     private void OnTriggerExit(Collider other)
     {
-        if (isFixed) return;
+        if (isFixed || IsGround(other.gameObject)) return;
 
-        // ignore ground objects
-        if (_IsGround(other.gameObject)) return;
-
-        _nObstacles--;
-        if (_nObstacles == 0)
-            SetPlacementMode(PlacementMode.Valid);
+        obstacleCount--;
+        if (obstacleCount == 0)
+            UpdatePlacementMode(PlacementMode.Valid);
     }
 
 #if UNITY_EDITOR
+    // Ensure materials are initialized correctly in the editor
     private void OnValidate()
     {
-        _InitializeMaterials();
+        InitializeMaterials();
     }
 #endif
 
-    public void SetPlacementMode(PlacementMode mode)
+    // set the placement mode and update material accordingly
+    public void UpdatePlacementMode(PlacementMode mode)
     {
-        if (mode == PlacementMode.Fixed)
-        {
-            isFixed = true;
-            hasValidPlacement = true;
-        }
-        else if (mode == PlacementMode.Valid)
-        {
-            hasValidPlacement = true;
-        }
-        else
-        {
-            hasValidPlacement = false;
-        }
-        SetMaterial(mode);
+        isFixed = mode == PlacementMode.Fixed;
+        hasValidPlacement = mode != PlacementMode.Invalid;
+        ApplyMaterialBasedOnMode(mode);
     }
 
-    public void SetMaterial(PlacementMode mode)
+    // Apply materials based on the current placement mode
+    public void ApplyMaterialBasedOnMode(PlacementMode mode)
     {
-        if (mode == PlacementMode.Fixed)
+        foreach (MeshRenderer renderer in meshComponents)
         {
-            foreach (MeshRenderer r in meshComponents)
-                r.sharedMaterials = initialMaterials[r].ToArray();
-        }
-        else
-        {
-            Material matToApply = mode == PlacementMode.Valid
-                ? validPlacementMaterial : invalidPlacementMaterial;
-
-            Material[] m; int nMaterials;
-            foreach (MeshRenderer r in meshComponents)
+            Material[] materials = mode == PlacementMode.Fixed ? initialMaterials[renderer].ToArray() : new Material[renderer.sharedMaterials.Length];
+            if (mode != PlacementMode.Fixed)
             {
-                nMaterials = initialMaterials[r].Count;
-                m = new Material[nMaterials];
-                for (int i = 0; i < nMaterials; i++)
-                    m[i] = matToApply;
-                r.sharedMaterials = m;
+                Material matToApply = mode == PlacementMode.Valid ? validPlacementMaterial : invalidPlacementMaterial;
+                for (int i = 0; i < materials.Length; i++)
+                {
+                    materials[i] = matToApply;
+                }
             }
+            renderer.sharedMaterials = materials;
         }
     }
 
-    private void _InitializeMaterials()
+    // Initialize or reinitialize the initial materials for all mesh components
+    private void InitializeMaterials()
     {
-        if (initialMaterials == null)
-            initialMaterials = new Dictionary<MeshRenderer, List<Material>>();
-        if (initialMaterials.Count > 0)
+        initialMaterials.Clear();
+        foreach (MeshRenderer renderer in meshComponents)
         {
-            foreach (var l in initialMaterials) l.Value.Clear();
-            initialMaterials.Clear();
-        }
-
-        foreach (MeshRenderer r in meshComponents)
-        {
-            initialMaterials[r] = new List<Material>(r.sharedMaterials);
+            initialMaterials[renderer] = new List<Material>(renderer.sharedMaterials);
         }
     }
 
-    private bool _IsGround(GameObject o)
+    // determine if a collider is considered ground.
+    private bool IsGround(GameObject obj)
     {
-        return ((1 << o.layer) & BuildingPlacer.Instance.Ground.value) != 0;
+        return ((1 << obj.layer) & BuildingPlacer.Instance.groundLayer.value) != 0;
     }
-
 }

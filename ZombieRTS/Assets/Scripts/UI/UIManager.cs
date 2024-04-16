@@ -3,26 +3,28 @@ using UnityEngine;
 public class UIManager : MonoBehaviour
 {
     [SerializeField] GameObject buildingUI;
-    [SerializeField] TMPro.TextMeshProUGUI BoneResource;
-    [SerializeField] TMPro.TextMeshProUGUI BiohazardResource;
+    [SerializeField] TMPro.TextMeshProUGUI boneResourceText;
+    [SerializeField] TMPro.TextMeshProUGUI biohazardResourceText;
 
     private void Update()
     {
-        if (buildingUI.activeSelf == false)
+        HandleBuildingUIToggle();
+        UpdateResourceDisplays();
+    }
+
+    // Toggles the building UI visibility
+    private void HandleBuildingUIToggle()
+    {
+        if (Input.GetKeyDown(KeyCode.B))
         {
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                buildingUI.SetActive(true);
-            }
+            buildingUI.SetActive(!buildingUI.activeSelf);
         }
-        else if (buildingUI.activeSelf == true)
-        {
-            if (Input.GetKeyDown(KeyCode.B))
-            {
-                buildingUI.SetActive(false);
-            }
-        }
-        BoneResource.text = Bone_Factory.totalBones.ToString();
-        BiohazardResource.text = Biohazard_Factory.totalBiohazard.ToString();
+    }
+
+    // Updates the text displays for resources.
+    private void UpdateResourceDisplays()
+    {
+        boneResourceText.text = Bone_Factory.totalBones.ToString();
+        biohazardResourceText.text = Biohazard_Factory.totalBiohazard.ToString();
     }
 }

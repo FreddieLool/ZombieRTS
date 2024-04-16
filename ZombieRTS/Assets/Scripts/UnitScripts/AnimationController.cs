@@ -6,10 +6,11 @@ public class AnimationController : MonoBehaviour
     [SerializeField] UnitController script;
     void Start()
     {
-        script.startedWalking.AddListener(ChangeSpeed);
+        script.onMovementStateChanged.AddListener(ChangeSpeed);
     }
-    public void ChangeSpeed(bool startedWalking)
+    public void ChangeSpeed(bool isWalking)
     {
-            animator.SetBool("isWalking", startedWalking);
+        animator.SetBool("isWalking", isWalking);
     }
+
 }

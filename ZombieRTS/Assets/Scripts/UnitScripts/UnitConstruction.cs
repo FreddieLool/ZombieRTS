@@ -11,17 +11,23 @@ public class UnitConstruction : MonoBehaviour
     public bool isEnemy;
 
     private Dictionary<int, Queue<GameObject>> pools;
-    private float timeSinceLastSpawn; 
+    private float timeSinceLastSpawn;
 
-    private void Awake()
+
+    void Awake()
     {
         InitializePools();
         timeSinceLastSpawn = 0;
     }
-    private void Update()
+
+    // Tracks time since the last spawn to control spawn rate
+    void Update()
     {
-        timeSinceLastSpawn += Time.deltaTime; // Update the timer every frame.
+        timeSinceLastSpawn += Time.deltaTime;
+        ManageSpawnTimer();
     }
+
+    // Initializes the object pools based on prefabs and pool size.
     private void InitializePools()
     {
         if (unitPrefabs == null)
@@ -54,6 +60,17 @@ public class UnitConstruction : MonoBehaviour
         }
     }
 
+    // Handles the spawn logic based on the timer.
+    private void ManageSpawnTimer()
+    {
+        if (timeSinceLastSpawn >= spawnTimer)
+        {
+            // Potentially spawn units here or reset the timer for controlled spawning
+            timeSinceLastSpawn -= spawnTimer;
+        }
+    }
+
+    // Spawns a unit of the given type from its corresponding pool
     public void SpawnUnit(int unitType)
     {
         if (pools == null || unitPrefabs == null)
@@ -74,17 +91,15 @@ public class UnitConstruction : MonoBehaviour
             return;
         }
 
-        if (pools[unitType].Count > 0 && timeSinceLastSpawn > spawnTimer)
+        Queue<GameObject> pool = pools[unitType];
+        if (pool.Count > 0)
         {
-            GameObject objectToSpawn = pools[unitType].Dequeue();
-            objectToSpawn.transform.position = BuildingSelectionManager.Instance.SelectedBuilding.transform.position;
+            GameObject objectToSpawn = pool.Dequeue();
+            objectToSpawn.transform.position = BuildingSelectionManager.Instance.selectedBuilding.transform.position;
             objectToSpawn.SetActive(true);
 
-            // Re-add the object to the queue to enable reuse when it gets deactivated again.
-            pools[unitType].Enqueue(objectToSpawn);
-
-            // Reset the timer as a unit has been successfully spawned
-            timeSinceLastSpawn = 0f;
+            // Re-enqueue the object to enable reuse
+            pool.Enqueue(objectToSpawn);
         }
         else
         {

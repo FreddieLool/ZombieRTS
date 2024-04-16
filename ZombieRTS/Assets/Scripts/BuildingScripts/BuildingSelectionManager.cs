@@ -9,11 +9,11 @@ using UnityEngine.EventSystems;
 public class BuildingSelectionManager : MonoBehaviour
 
 {
-    [SerializeField] GameObject ConstructionUI;
-    [SerializeField] MouseOverUI MouseOverUI;
-    public LayerMask Clickable;
+    [SerializeField] GameObject constructionUI;
+    [SerializeField] MouseOverUI mouseOverUI;
+    public LayerMask clickable;
     public List<GameObject> allBuildingsList = new List<GameObject>();
-    public GameObject SelectedBuilding;
+    public GameObject selectedBuilding;
     private Camera mainCamera;
 
     public static BuildingSelectionManager Instance { get; set; }
@@ -34,51 +34,64 @@ public class BuildingSelectionManager : MonoBehaviour
     private void Start()
     {
         mainCamera = Camera.main;
+        if (mainCamera == null)
+        {
+            Debug.LogError("Main camera not found!");
+        }
     }
 
-    // Update is called once per frame
+    // Checks for user input to select or deselect buildings.
     void Update()
     {
         if (Input.GetMouseButtonDown(0) && allBuildingsList.Count > 0)
         {
-            RaycastHit hit;
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, Clickable))
-            {
-                SelectByClicking(hit.collider.gameObject);
-            }
-            else if (!MouseOverUI.IsMouseOver())
-            {
-                Deselect();
-            }
+            HandleBuildingSelection();
         }
     }
 
-    private void Deselect()
+    private void HandleBuildingSelection()
     {
-        foreach (var selectedBuilding in allBuildingsList)
+        RaycastHit hit;
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, clickable))
         {
-            ConstructionUI.SetActive(false);
-            TriggerSelectionIndicator(selectedBuilding, false);
+            SelectByClicking(hit.collider.gameObject);
         }
-
-
+        else if (mouseOverUI != null && !mouseOverUI.IsMouseOver())
+        {
+            DeselectAllBuildings();
+        }
     }
 
-    private void SelectByClicking(GameObject selectedBuilding)
+    // Deselects all buildings and hides related UI components
+    private void DeselectAllBuildings()
     {
-        Deselect();
-
-        SelectedBuilding = selectedBuilding;
-
-        TriggerSelectionIndicator(selectedBuilding, true);
-        ConstructionUI.SetActive(true);
+        foreach (var building in allBuildingsList)
+        {
+            TriggerSelectionIndicator(building, false);
+        }
+        if (constructionUI != null)
+        {
+            constructionUI.SetActive(false);
+        }
     }
 
-    void TriggerSelectionIndicator(GameObject selectedBuilding, bool isVisible)
+    // Handles selection logic when a building is clicked
+    private void SelectByClicking(GameObject building)
     {
-        selectedBuilding.transform.GetChild(0).gameObject.SetActive(isVisible);
+        DeselectAllBuildings();
 
+        selectedBuilding = building;
+        TriggerSelectionIndicator(building, true);
+        constructionUI.SetActive(true);
+    }
+
+    // Toggles the selection indicator for a building
+    private void TriggerSelectionIndicator(GameObject building, bool isVisible)
+    {
+        // Assuming the first child is ALWAYS the selection indicator
+        building.transform.GetChild(0).gameObject.SetActive(isVisible);
     }
 }
+

@@ -1,18 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 [RequireComponent(typeof(UnitController))]
 public class Unit : MonoBehaviour
 {
-    // Start is called before the first frame update
+    // Automatically registers the unit with the UnitSelectionManager upon instantiation
     void Start()
     {
-        UnitSelectionManager.Instance.allUnitsList.Add(gameObject);
+        // Adds this unit to the managed list of all units in the UnitSelectionManager
+        UnitSelectionManager.Instance.AddUnit(this.gameObject);
     }
 
-    private void OnDestroy()
+    // Automatically deregisters the unit from the UnitSelectionManager upon destruction
+    void OnDestroy()
     {
-        UnitSelectionManager.Instance.allUnitsList.Remove(gameObject);
+        // Removes this unit from the managed list of all units in the UnitSelectionManager
+        UnitSelectionManager.Instance.RemoveUnit(this.gameObject);
     }
-
 }
