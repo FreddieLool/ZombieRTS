@@ -1,5 +1,7 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour
 {
@@ -10,12 +12,48 @@ public class CameraController : MonoBehaviour
     //   CameraController.instance.followTransform = transform;
     // }
 
+    [SerializeField] private Camera mainCamera;  // Ensure this is linked to your main camera in the Inspector
+
     [Header("General")]
     [SerializeField] Transform cameraTransform;
     public Transform followTransform;
     Vector3 newPosition;
     Vector3 dragStartPosition;
     Vector3 dragCurrentPosition;
+
+    [Header("Camera Controls")]
+    public Transform playerTransform;
+    private Vector3 targetPosition;
+
+    public Vector3 followOffset = new Vector3(0, 5, -10);
+    public float smoothSpeed = 0.125f;
+
+    [Header("Zoom Settings")]
+    [Header("*values assigned inspector only")]
+    [SerializeField] private float zoomSpeed;
+    [SerializeField] private float minFov;
+    [SerializeField] private float maxFov;
+    [SerializeField] private float defaultFov;
+    [SerializeField] private float maxZoomOutFov;  // value 2 trigger a snapback to maxFov
+    [SerializeField] private float zoomOutResetDelay;
+
+    [Header("UI for Zoom Level")]
+    [SerializeField] private Slider zoomSlider; 
+    [SerializeField] private CanvasGroup zoomSliderCanvasGroup; 
+    private float fadeOutDelay = 2.0f; // before the slider fades out
+    private float fadeDuration = 0.5f;
+    private float initialFadeLevel = 0.1777f;
+    private float targetFadeLevel = 0.773f;
+
+
+    // for zoom out/in on crossing maxfovs
+    private float targetFov;
+    private float smoothFov;
+    private float currentFovVelocity;  // For SmoothDamp
+    private float zoomDampTime = 0.3f; 
+    private float zoomReturnDelay = 1f;
+    private bool isReturningToDefault = false;
+
 
     [Header("Optional Functionality")]
     [SerializeField] bool moveWithKeyboad;
@@ -46,16 +84,22 @@ public class CameraController : MonoBehaviour
         DEFAULT
     }
 
-    private void Start()
+    void Start()
     {
         instance = this;
 
         newPosition = transform.position;
 
         movementSpeed = normalSpeed;
+
+        targetFov = mainCamera.fieldOfView = defaultFov;
+
+        // In-Game UI
+        UpdateZoomSlider(targetFov);
+        SetSliderVisibility(initialFadeLevel, false);
     }
 
-    private void Update()
+    void Update()
     {
         // Allow Camera to follow Target
         if (followTransform != null)
@@ -66,13 +110,156 @@ public class CameraController : MonoBehaviour
         else
         {
             HandleCameraMovement();
+            HandleZoomInput();
+            SmoothlyUpdateFOV();
+            UpdateZoomSlider(mainCamera.fieldOfView);
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            followTransform = playerTransform;
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             followTransform = null;
         }
+
+        if (followTransform != null)
+        {
+            FollowPlayer();
+        }
     }
+
+    void FollowPlayer()
+    {
+        Vector3 desiredPosition = followTransform.position + followOffset;
+        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+        transform.position = smoothedPosition;
+
+    }
+
+    private void HandleZoomInput()
+    {
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll != 0)
+        {
+            float previousFov = targetFov;
+            targetFov -= scroll * zoomSpeed;
+            targetFov = Mathf.Clamp(targetFov, minFov, maxZoomOutFov);
+
+            if (scroll > 0 && targetFov < defaultFov) // Zooming in
+            {
+                CancelInvoke(nameof(ReturnToDefaultFov));
+                Invoke(nameof(ReturnToDefaultFov), 1f);
+            }
+            else if (scroll < 0 && targetFov > maxFov) // Zooming out
+            {
+                CancelInvoke(nameof(ReturnToMaxFov));
+                Invoke(nameof(ReturnToMaxFov), zoomOutResetDelay);
+            }
+
+            // whenever there is input - deal wit it!
+            CancelInvoke(nameof(FadeOutSlider));
+            Invoke(nameof(FadeOutSlider), fadeOutDelay);
+            FadeSlider(targetFadeLevel); // Fade in when zooming
+        }
+    }
+
+    private void CheckZoomLimits(float scrollDirection)
+    {
+        if (scrollDirection > 0 && targetFov < defaultFov)
+        {
+            // Zooming in and FOV is less than default
+            CancelInvoke(nameof(ReturnToDefaultFov));
+            Invoke(nameof(ReturnToDefaultFov), 1f);
+        }
+        else if (scrollDirection < 0 && targetFov > maxFov)
+        {
+            // Zooming out and FOV is greater than maxFov
+            CancelInvoke(nameof(ReturnToMaxFov));
+            Invoke(nameof(ReturnToMaxFov), zoomOutResetDelay);
+        }
+    }
+
+
+    private void ReturnToMaxFov()
+    {
+        targetFov = maxFov;
+    }
+
+
+    private void UpdateZoomSlider(float fov)
+    {
+        zoomSlider.value = (fov - minFov) / (maxZoomOutFov - minFov);
+    }
+
+    private void FadeOutSlider()
+    {
+        FadeSlider(initialFadeLevel); // Fade out after inactivity
+    }
+
+    private void FadeSlider(float targetAlpha)
+    {
+        StartCoroutine(FadeSliderTo(targetAlpha));
+    }
+
+    private IEnumerator FadeSliderTo(float targetAlpha)
+    {
+        float startAlpha = zoomSliderCanvasGroup.alpha;
+        float currentTime = 0f;
+
+        while (currentTime < fadeDuration)
+        {
+            currentTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, targetAlpha, currentTime / fadeDuration);
+            SetSliderVisibility(alpha, targetAlpha > 0);
+            yield return null;
+        }
+    }
+
+    private void SetSliderVisibility(float alpha, bool visible)
+    {
+        zoomSliderCanvasGroup.alpha = alpha;
+        zoomSliderCanvasGroup.interactable = visible;
+        zoomSliderCanvasGroup.blocksRaycasts = visible;
+    }
+
+    private void HideZoomSlider()
+    {
+        if (zoomSlider)
+        {
+            zoomSlider.gameObject.SetActive(false);
+        }
+    }
+
+    private void ReturnToDefaultFov()
+    {
+        targetFov = defaultFov;
+    }
+
+    private void SmoothlyUpdateFOV()
+    {
+        if (Mathf.Abs(mainCamera.fieldOfView - targetFov) > 0.1f)
+        {
+            // Simulate a bounce by temporarily setting a target beyond the final target
+            float bounceTarget = targetFov + (targetFov - smoothFov) * 0.1f;
+            smoothFov = Mathf.SmoothDamp(mainCamera.fieldOfView, bounceTarget, ref currentFovVelocity, zoomDampTime);
+            mainCamera.fieldOfView = smoothFov;
+        }
+        else
+        {
+            mainCamera.fieldOfView = targetFov;
+        }
+    }
+
+    // 1. camera zoom in zoom out.
+    // 2. button to appear when player is out of camera view, click to animate, and bring player to center.
+    // 3. todo:
+    // Scrolling Smooth Zoomin
+    // Shift + wasd for faster movement
+    // 
+
 
     void HandleCameraMovement()
     {
@@ -82,10 +269,18 @@ public class CameraController : MonoBehaviour
             HandleMouseDragInput();
         }
 
+        float currentSpeed = normalSpeed;
+
+        // Shift adds speed multiplier
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        {
+            currentSpeed *= 1.5f;
+        }
+
         // Keyboard Control
         if (moveWithKeyboad)
         {
-            if (Input.GetKey(KeyCode.LeftCommand))
+            if (Input.GetKey(KeyCode.LeftShift))
             {
                 movementSpeed = fastSpeed;
             }
@@ -93,6 +288,8 @@ public class CameraController : MonoBehaviour
             {
                 movementSpeed = normalSpeed;
             }
+
+            Vector3 direction = Vector3.zero;
 
             if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
             {
@@ -110,7 +307,12 @@ public class CameraController : MonoBehaviour
             {
                 newPosition += (transform.right * -movementSpeed) * Time.deltaTime;
             }
+
+            newPosition += direction * currentSpeed * Time.deltaTime;
         }
+
+        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementSensitivity);
+
 
         // Edge Scrolling
         if (moveWithEdgeScrolling)
