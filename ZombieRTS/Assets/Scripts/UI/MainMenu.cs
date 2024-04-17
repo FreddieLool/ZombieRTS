@@ -10,11 +10,6 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button creditsButton;
 
-    [Header("Sound Manager")]
-    [SerializeField] private AudioClip hoverSound;
-    [SerializeField] private AudioClip clickSound;
-    [SerializeField] private AudioClip backgroundMusic;
-    [SerializeField] private AudioSource audioSource;
 
     [Header("Panels")]
     [SerializeField] private GameObject mainPanel;
@@ -32,23 +27,8 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
-        if (audioSource == null)
-        {
-            Debug.LogError("Missing AudioSource component on the GameObject");
-            return;
-        }
-
-        // Setup and play background music
-        if (backgroundMusic == null)
-        {
-            Debug.LogError("Background music clip is not assigned!");
-            return;
-        }
-
-        audioSource.clip = backgroundMusic;
-        audioSource.loop = true;
-        audioSource.Play();
-        Debug.Log("Background music should be playing now");
+        // Saved values
+        InitializeSliders();
 
         // Setup buttons and effects
         SetupButtonListeners();
@@ -58,11 +38,20 @@ public class MainMenu : MonoBehaviour
         settingsPanel.SetActive(false);
         creditsPanel.SetActive(false);
 
-        sfxSlider.onValueChanged.AddListener(SetSFXVolume);
-        musicSlider.onValueChanged.AddListener(SetMusicVolume);
+        sfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSFXVolume);
+        musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
 
         settingsBackButton.onClick.AddListener(() => TogglePanel(settingsPanel, false));
         creditsBackButton.onClick.AddListener(() => TogglePanel(creditsPanel, false));
+    }
+
+    private void InitializeSliders()
+    {
+        musicSlider.value = AudioManager.Instance.GetMusicVolume();
+        sfxSlider.value = AudioManager.Instance.GetSFXVolume();
+
+        musicSlider.onValueChanged.AddListener(AudioManager.Instance.SetMusicVolume);
+        sfxSlider.onValueChanged.AddListener(AudioManager.Instance.SetSFXVolume);
     }
 
     private void SetupButtonListeners()
@@ -98,13 +87,13 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         SceneManager.LoadSceneAsync(1); // Load the game scene
-        PlayClickSound();
+        AudioManager.Instance.PlayClickSound();
     }
 
     public void Quit()
     {
         Application.Quit();
-        PlayClickSound();
+        AudioManager.Instance.PlayClickSound();
     }
 
     private void AddButtonEffects(Button button, Color hoverColor)
@@ -123,7 +112,7 @@ public class MainMenu : MonoBehaviour
 
         // Click effect
         var pointerClick = new EventTrigger.Entry { eventID = EventTriggerType.PointerClick };
-        pointerClick.callback.AddListener((data) => { PlayClickSound(); });
+        pointerClick.callback.AddListener((data) => { AudioManager.Instance.PlayClickSound(); });
         trigger.triggers.Add(pointerClick);
     }
 
@@ -131,7 +120,7 @@ public class MainMenu : MonoBehaviour
     private void OnHoverEnter(Button button, Color color)
     {
         button.image.color = color;
-        PlayHoverSound();
+        AudioManager.Instance.PlayHoverSound();
     }
 
     private void OnHoverExit(Button button)
@@ -147,37 +136,17 @@ public class MainMenu : MonoBehaviour
         button.image.color = color;
     }
 
-    private void PlayHoverSound()
-    {
-        if (hoverSound == null)
-        {
-            Debug.LogError("Hover sound clip is not assigned!");
-            return;
-        }
-        audioSource.PlayOneShot(hoverSound);
-    }
-
-    private void PlayClickSound()
-    {
-        if (clickSound == null)
-        {
-            Debug.LogError("Click sound clip is not assigned!");
-            return;
-        }
-        audioSource.PlayOneShot(clickSound);
-    }
-
     public void OpenSettings()
     {
         TogglePanel(settingsPanel, true);
-        PlayClickSound();
+        AudioManager.Instance.PlayClickSound();
 
     }
 
     public void OpenCredits()
     {
         TogglePanel(creditsPanel, true);
-        PlayClickSound();
+        AudioManager.Instance.PlayClickSound();
     }
 
     private void ResetButtonColors()
@@ -235,17 +204,6 @@ public class MainMenu : MonoBehaviour
         // Reset colors or other UI elements
         ResetButtonColors();
     }
-
-    private void SetMusicVolume(float volume)
-    {
-        audioSource.volume = volume;
-    }
-
-    private void SetSFXVolume(float volume)
-    {
-        // logica
-    }
-
 }
 
 
