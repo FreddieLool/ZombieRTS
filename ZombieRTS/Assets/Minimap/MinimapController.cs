@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 
 public class MinimapController : MonoBehaviour
@@ -14,6 +15,8 @@ public class MinimapController : MonoBehaviour
     public Collider mapCollider;
 
     public LineRenderer lineRenderer;
+
+
 
 
     private void Update()
@@ -59,4 +62,5 @@ public class MinimapController : MonoBehaviour
         DrawRect();
     }
 
+  
 }

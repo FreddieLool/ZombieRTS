@@ -81,6 +81,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2523938621974348958}
+  - component: {fileID: 5735437138875491394}
   m_Layer: 5
   m_Name: Minimap
   m_TagString: Untagged
@@ -109,6 +110,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &5735437138875491394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6940002169832092372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a607b14a08acb4447ae3eced45d0e581, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minimapRect: {fileID: 2523938621974348958}
+  minimapCamera: {fileID: 0}
+  cameraRig: {fileID: 0}
+  marker: {fileID: 6111044083923933078, guid: 1439da7ab1c0da244bfbd6a8848e39ce, type: 3}
+  terrainMin: {x: 0, y: 0}
+  terrainMax: {x: 500, y: 500}
 --- !u!1 &8881970827054369350
 GameObject:
   m_ObjectHideFlags: 0
