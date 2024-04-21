@@ -1,0 +1,187 @@
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
+using static AudioManager;
+
+
+public class UIManager : MonoBehaviour
+{
+    public static UIManager Instance { get; private set; }
+
+    // Building UI
+    [SerializeField] GameObject buildingUI;
+    [SerializeField] private RectTransform buildingUIRectTransform;  // Assuming you have a RectTransform for the UI
+    private bool isBuildingUIVisible = false;  // Track visibility state of the building UI
+
+    // ----------------
+
+
+
+    [SerializeField] private BuildingData[] buildings; // all buildings
+    // DECOUPLE buulding data
+
+    [SerializeField] private GameObject buttonPrefab;
+    [SerializeField] private Transform WorldSpaceCanvasParent;
+    [SerializeField] private Transform buttonParent;
+    [SerializeField] private TextMeshProUGUI cycleCounterText;
+
+
+    // Building Info UI
+    public Transform target; // The building's transform
+    public Vector3 offset = new Vector3(0, 5, 0); // Offset to display above the building
+    [SerializeField] private GameObject infoUIPrefab; // The world-space canvas prefab
+    private GameObject activeInfoUI; // Currently active UI instance
+
+    void Awake()
+    {
+        if (Instance != this && Instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
+
+    void Start()
+    {
+        LightingManager.Instance.onNewCycle.AddListener(UpdateCycleCounter);
+        PopulateBuildingButtons();
+        cycleCounterText.text = "" + 1;
+        buildingUI.SetActive(false);  // Start with the UI hidden
+    }
+    void Update()
+    {
+        HandleBuildingUIToggle();
+
+        if (Input.GetMouseButtonDown(0) && !IsPointerOverUIObject())
+        {
+            // If we clicked and it's not on a UI object, then perform additional checks
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hit))
+            {
+                Building building = hit.collider.GetComponent<Building>();
+                if (building != null)
+                {
+                    ShowBuildingInfo(building); // Show UI for the clicked building
+                    return; 
+                }
+            }
+
+            // If the raycast didn't hit a building or if it's a click in empty space, hide the UI
+            HideUI();
+        }
+    }
+
+    private void UpdateCycleCounter()
+    {
+        int currentCycle = LightingManager.Instance.GetCurrentCycle();
+        cycleCounterText.text = $"{currentCycle}";
+        AnimateCycleText();
+    }
+
+    private void AnimateCycleText()
+    {
+        cycleCounterText.transform.localScale = Vector3.one * 1.25f; // Increase size for animation
+        LeanTween.scale(cycleCounterText.gameObject, Vector3.one, 0.5f).setEase(LeanTweenType.easeOutElastic); // Animation back to normal size
+    }
+
+
+    private bool IsPointerOverUIObject()
+    {
+        // This returns true if the pointer is over any UI element
+        return EventSystem.current.IsPointerOverGameObject();
+    }
+
+
+    private void PopulateBuildingButtons()
+    {
+        foreach (var building in buildings)
+        {
+            GameObject btnObj = Instantiate(buttonPrefab, buttonParent);
+            BuildingButton buildingButton = btnObj.GetComponent<BuildingButton>();
+            buildingButton.Setup(building);
+            BuildingData currentBuilding = building; // temp var to correctly capture the current loop iteration
+            buildingButton.button.onClick.AddListener(() => SelectBuildingButton(currentBuilding));
+        }
+    }
+
+    private void SelectBuildingButton(BuildingData building)
+    {
+        Debug.Log("Building selected: " + building.buildingName);
+        BuildingManager.Instance.SelectBuilding(building);
+    }
+
+    public void ShowBuildingInfo(Building building)
+    {
+        if (activeInfoUI != null) Destroy(activeInfoUI);
+
+        Vector3 uiPosition = building.transform.position + new Vector3(0, 5, 0);
+        activeInfoUI = Instantiate(infoUIPrefab, uiPosition, Quaternion.identity, WorldSpaceCanvasParent);
+        activeInfoUI.GetComponent<BuildingUI>().SetupUI(building);
+    }
+
+    public void HideUI()
+    {
+        if (activeInfoUI != null)
+        {
+            Destroy(activeInfoUI);
+        }
+    }
+
+    // Toggles the building UI visibility
+    private void HandleBuildingUIToggle()
+    {
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            ToggleBuildingUI();
+        }
+    }
+
+    private void ToggleBuildingUI()
+    {
+        if (!isBuildingUIVisible)
+        {
+            ShowBuildingUI();
+        }
+        else
+        {
+            HideBuildingUI();
+        }
+    }
+
+    private void ShowBuildingUI()
+    {
+        buildingUI.SetActive(true);
+        isBuildingUIVisible = true;
+        // Start from the right off-screen
+        Vector3 startPosition = new Vector3(Screen.width, buildingUIRectTransform.anchoredPosition.y, 0);
+        Vector3 endPosition = new Vector3(0, buildingUIRectTransform.anchoredPosition.y, 0);  // Assuming the UI fits at x=0 when fully visible
+
+        buildingUIRectTransform.anchoredPosition = startPosition;
+        LeanTween.move(buildingUIRectTransform, endPosition, 0.75f).setEase(LeanTweenType.easeOutExpo);
+        AudioManager.Instance.PlaySoundEffect(SoundEffect.ShowUIBuilding);
+    }
+
+    private void HideBuildingUI()
+    {
+        Vector3 endPosition = new Vector3(Screen.width, buildingUIRectTransform.anchoredPosition.y, 0);
+        AudioManager.Instance.PlaySoundEffect(SoundEffect.CloseUIBuilding);
+        LeanTween.move(buildingUIRectTransform, endPosition, 0.5f).setEase(LeanTweenType.easeInExpo).setOnComplete(() =>
+        {
+            buildingUI.SetActive(false);
+            isBuildingUIVisible = false;
+        });
+    }
+
+    // Building UI Info
+
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
+    }
+}

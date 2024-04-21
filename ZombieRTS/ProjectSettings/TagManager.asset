@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Selectable_Char
   - Enemy
+  - Unit
+  - Building
+  - Back Button
   layers:
   - Default
   - TransparentFX
@@ -18,9 +21,9 @@ TagManager:
   - ClickableBuilding
   - Attackble
   - Minimap
-  - 
-  - 
-  - 
+  - Terrain
+  - Objects
+  - Trees
   - 
   - 
   - 
