@@ -71,7 +71,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e300e55968d64be418a28ce262b546e4, type: 3}
   - {fileID: 8300000, guid: 85bb144c01d97624d9d8351356a09984, type: 3}
   - {fileID: 8300000, guid: c5a2bacb94918794fafbd72a5fa9ee6b, type: 3}
-  soundTracks: []
+  backgroundMusicTracks:
+  - {fileID: 8300000, guid: e59edefc5f1186e48869020f8bd97574, type: 3}
+  - {fileID: 8300000, guid: c9a627feaf76f714bbf838c1fdd20855, type: 3}
+  - {fileID: 8300000, guid: cb22c0012a57e804cb765a36d25a00da, type: 3}
+  - {fileID: 8300000, guid: 70028fe325d8a6a4492f95d0e3255396, type: 3}
+  - {fileID: 8300000, guid: c2a03a71d4fff514f83495915f764cde, type: 3}
   unitSelectedClips:
   - {fileID: 8300000, guid: f59eebb3c5f359047ad420d48d58eb63, type: 3}
   - {fileID: 8300000, guid: e6e49bbd858f5a148816e8e6f8e8a18e, type: 3}

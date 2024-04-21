@@ -43,8 +43,8 @@ public class AudioManager : MonoBehaviour
 
 
     [Header("- Music")]
-    [SerializeField] AudioClip[] soundTracks;
-
+    [SerializeField] private AudioClip[] backgroundMusicTracks; // Array of music tracks
+    private int currentTrackIndex = 0;
     private Dictionary<SoundEffect, AudioClip> soundEffects = new Dictionary<SoundEffect, AudioClip>();
 
 
@@ -84,16 +84,8 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        // Setup and play background music
-        if (backgroundMusic == null)
-        {
-            Debug.LogError("Background music clip is not assigned!");
-            return;
-        }
-
-        musicSource.clip = backgroundMusic;
-        musicSource.loop = true;
-        musicSource.Play();
+        ShuffleMusic();
+        PlayNextTrack();
     }
 
     void Update()
@@ -161,6 +153,41 @@ public class AudioManager : MonoBehaviour
         if (targetVolume == 0) audioSource.Stop();
     }
 
+    private void ShuffleMusic()
+    {
+        int n = backgroundMusicTracks.Length;
+        while (n > 1)
+        {
+            n--;
+            int k = Random.Range(0, n + 1);
+            AudioClip value = backgroundMusicTracks[k];
+            backgroundMusicTracks[k] = backgroundMusicTracks[n];
+            backgroundMusicTracks[n] = value;
+        }
+    }
+
+    private void PlayNextTrack()
+    {
+        musicSource.clip = backgroundMusicTracks[currentTrackIndex];
+        musicSource.Play();
+        StartCoroutine(WaitForMusicEnd());
+    }
+
+    private IEnumerator WaitForMusicEnd()
+    {
+        while (musicSource.isPlaying)
+        {
+            yield return null;
+        }
+
+        currentTrackIndex++;
+        if (currentTrackIndex >= backgroundMusicTracks.Length)
+        {
+            currentTrackIndex = 0;
+            ShuffleMusic();  // Re-shuffle after all tracks have been played
+        }
+        PlayNextTrack();
+    }
 
     private void ShuffleSounds(List<AudioClip> sounds, List<int> order)
     {
