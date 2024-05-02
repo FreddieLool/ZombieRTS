@@ -7,7 +7,7 @@ public class MinimapCameraMove : MonoBehaviour, IPointerClickHandler
 {
     public RectTransform minimapRect;
     public Camera minimapCamera;
-    public Transform cameraRig;
+    public CameraController CameraController;
 
     public Vector2 terrainMin;
     public Vector2 terrainMax;
@@ -25,9 +25,8 @@ public class MinimapCameraMove : MonoBehaviour, IPointerClickHandler
         worldPosition.x = Mathf.Lerp(terrainMin.x, terrainMax.x, localClick.x / (minimapRect.rect.width));
         worldPosition.z = Mathf.Lerp(terrainMin.y, terrainMax.y, localClick.y / (minimapRect.rect.height));
 
-        worldPosition.y = cameraRig.position.y;
 
-        cameraRig.position = worldPosition;
+        CameraController.SetCameraXZPosition(worldPosition.x,worldPosition.z);
 
     }
 }

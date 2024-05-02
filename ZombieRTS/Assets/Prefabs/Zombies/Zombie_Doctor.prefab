@@ -38,7 +38,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8964814724816228860}
-  - {fileID: 3844515072664599225}
+  - {fileID: 3500304799755189749}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!195 &4522585395050091025
@@ -55,7 +55,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 2.5
+  m_StoppingDistance: 0.1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -70,15 +70,15 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4854363371836294373}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8212dd37fcf22d4f8b6d67826c1207a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitAgent: {fileID: 0}
+  unitAgent: {fileID: 4522585395050091025}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   isCommandedToMove: 0
   onMovementStateChanged:
     m_PersistentCalls:
@@ -183,7 +183,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 5
+  m_Radius: 4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &2884455698919573035
 PrefabInstance:
@@ -206,12 +206,12 @@ PrefabInstance:
     - target: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.05
+      value: 0.003
       objectReference: {fileID: 0}
     - target: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.05
+      value: 0.003
       objectReference: {fileID: 0}
     - target: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff,
         type: 3}
@@ -347,9 +347,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1439da7ab1c0da244bfbd6a8848e39ce, type: 3}
---- !u!4 &3844515072664599225 stripped
+--- !u!4 &3500304799755189749 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 8919336601056015857, guid: 1439da7ab1c0da244bfbd6a8848e39ce,
+  m_CorrespondingSourceObject: {fileID: 9083263317465313981, guid: 1439da7ab1c0da244bfbd6a8848e39ce,
     type: 3}
   m_PrefabInstance: {fileID: 5664876832707284808}
   m_PrefabAsset: {fileID: 0}

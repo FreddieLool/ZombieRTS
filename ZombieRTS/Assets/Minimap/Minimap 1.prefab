@@ -75,10 +75,10 @@ LineRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Positions:
-  - {x: 159.147, y: 160, z: 167.21735}
-  - {x: 197.25394, y: 160, z: 167.21735}
-  - {x: 204.2283, y: 160, z: 196.49918}
-  - {x: 152.173, y: 160, z: 196.49918}
+  - {x: 162.94586, y: 160, z: 164.71738}
+  - {x: 213.75659, y: 160, z: 164.71738}
+  - {x: 213.99481, y: 160, z: 165.31744}
+  - {x: 162.80292, y: 160, z: 165.31744}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 6
@@ -212,17 +212,17 @@ PrefabInstance:
     - target: {fileID: 8477691605453801344, guid: e2fec9fb8648f5a47923ee004a31a5cb,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 8477691605453801344, guid: e2fec9fb8648f5a47923ee004a31a5cb,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 8477691605453801344, guid: e2fec9fb8648f5a47923ee004a31a5cb,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 8477691605453801344, guid: e2fec9fb8648f5a47923ee004a31a5cb,
         type: 3}
@@ -262,7 +262,7 @@ PrefabInstance:
     - target: {fileID: 8739084689718121536, guid: e2fec9fb8648f5a47923ee004a31a5cb,
         type: 3}
       propertyPath: orthographic size
-      value: 510
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 8739084689718121536, guid: e2fec9fb8648f5a47923ee004a31a5cb,
         type: 3}

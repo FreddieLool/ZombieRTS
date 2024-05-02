@@ -1,3 +1,5 @@
+using Cinemachine;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -5,14 +7,19 @@ using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour
 {
-    public static CameraController instance;
 
     // If we want to select an item to follow, inside the item script add:
     // public void OnMouseDown(){
     //   CameraController.instance.followTransform = transform;
     // }
+    [Range(0f,1f)]
+    [SerializeField] private float zoomLevel = 1;
 
-    [SerializeField] private Camera mainCamera;  // Ensure this is linked to your main camera in the Inspector
+
+
+
+
+    [SerializeField] private CinemachineVirtualCamera vcam;
 
     [Header("General")]
     [SerializeField] Transform cameraTransform;
@@ -33,9 +40,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomSpeed;
     [SerializeField] private float minFov;
     [SerializeField] private float maxFov;
-    [SerializeField] private float defaultFov;
-    [SerializeField] private float maxZoomOutFov;  // value 2 trigger a snapback to maxFov
-    [SerializeField] private float zoomOutResetDelay;
+    [SerializeField] private float minAngle;
+    [SerializeField] private float maxAngle;
+    [SerializeField] private float minHeight;
+    [SerializeField] private float maxHeight;
+    [SerializeField] private AnimationCurve angleCurve;
+
 
     [Header("UI for Zoom Level")]
     [SerializeField] private Slider zoomSlider; 
@@ -46,11 +56,11 @@ public class CameraController : MonoBehaviour
     private float targetFadeLevel = 0.773f;
 
 
-    // for zoom out/in on crossing maxfovs
+    //// for zoom out/in on crossing maxfovs
     private float targetFov;
     private float smoothFov;
     private float currentFovVelocity;  // For SmoothDamp
-    private float zoomDampTime = 0.3f; 
+    private float zoomDampTime = 0.3f;
     private float zoomReturnDelay = 1f;
     private bool isReturningToDefault = false;
 
@@ -86,13 +96,12 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        instance = this;
 
         newPosition = transform.position;
 
         movementSpeed = normalSpeed;
 
-        targetFov = mainCamera.fieldOfView = defaultFov;
+        targetFov = maxFov;
 
         // In-Game UI
         UpdateZoomSlider(targetFov);
@@ -101,6 +110,9 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKey(KeyCode.O))
+            SetCameraXZPosition(182, 154);
+
         // Allow Camera to follow Target
         if (followTransform != null)
         {
@@ -112,7 +124,8 @@ public class CameraController : MonoBehaviour
             HandleCameraMovement();
             HandleZoomInput();
             SmoothlyUpdateFOV();
-            UpdateZoomSlider(mainCamera.fieldOfView);
+            UpdateAngle();
+            UpdateZoomSlider(vcam.m_Lens.FieldOfView);
         }
 
         if (Input.GetKeyDown(KeyCode.C))
@@ -131,6 +144,40 @@ public class CameraController : MonoBehaviour
         }
     }
 
+    public void SetCameraXZPosition(float x, float z)
+    {
+        Vector3 pos = transform.position;
+        pos.x = x;
+        pos.z = z - (transform.position.y / Mathf.Tan(Mathf.Deg2Rad * transform.rotation.eulerAngles.x));
+
+        transform.position = pos;
+    }
+
+
+
+
+    private void OnValidate()
+    {
+        vcam.m_Lens.FieldOfView = Mathf.Lerp(minFov, maxFov, zoomLevel);
+        UpdateAngle();
+    }
+
+    private void UpdateAngle()
+    {
+        Vector3 pos = transform.position;
+        Vector3 rotation = transform.rotation.eulerAngles;
+      
+        float tAngle = angleCurve.Evaluate(zoomLevel);
+        pos.y = Mathf.Lerp(minHeight, maxHeight, tAngle);
+        rotation.x = Mathf.Lerp(minAngle, maxAngle, tAngle);
+
+        transform.position = pos;
+        transform.rotation = Quaternion.Euler(rotation);
+
+
+
+    }
+
     void FollowPlayer()
     {
         Vector3 desiredPosition = followTransform.position + followOffset;
@@ -146,18 +193,7 @@ public class CameraController : MonoBehaviour
         {
             float previousFov = targetFov;
             targetFov -= scroll * zoomSpeed;
-            targetFov = Mathf.Clamp(targetFov, minFov, maxZoomOutFov);
-
-            if (scroll > 0 && targetFov < defaultFov) // Zooming in
-            {
-                CancelInvoke(nameof(ReturnToDefaultFov));
-                Invoke(nameof(ReturnToDefaultFov), 1f);
-            }
-            else if (scroll < 0 && targetFov > maxFov) // Zooming out
-            {
-                CancelInvoke(nameof(ReturnToMaxFov));
-                Invoke(nameof(ReturnToMaxFov), zoomOutResetDelay);
-            }
+            targetFov = Mathf.Clamp(targetFov, minFov, maxFov);
 
             // whenever there is input - deal wit it!
             CancelInvoke(nameof(FadeOutSlider));
@@ -166,23 +202,7 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void CheckZoomLimits(float scrollDirection)
-    {
-        if (scrollDirection > 0 && targetFov < defaultFov)
-        {
-            // Zooming in and FOV is less than default
-            CancelInvoke(nameof(ReturnToDefaultFov));
-            Invoke(nameof(ReturnToDefaultFov), 1f);
-        }
-        else if (scrollDirection < 0 && targetFov > maxFov)
-        {
-            // Zooming out and FOV is greater than maxFov
-            CancelInvoke(nameof(ReturnToMaxFov));
-            Invoke(nameof(ReturnToMaxFov), zoomOutResetDelay);
-        }
-    }
-
-
+   
     private void ReturnToMaxFov()
     {
         targetFov = maxFov;
@@ -191,7 +211,7 @@ public class CameraController : MonoBehaviour
 
     private void UpdateZoomSlider(float fov)
     {
-        zoomSlider.value = (fov - minFov) / (maxZoomOutFov - minFov);
+        zoomSlider.value = (fov - minFov) / (maxFov - minFov);
     }
 
     private void FadeOutSlider()
@@ -233,24 +253,21 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void ReturnToDefaultFov()
-    {
-        targetFov = defaultFov;
-    }
-
     private void SmoothlyUpdateFOV()
     {
-        if (Mathf.Abs(mainCamera.fieldOfView - targetFov) > 0.1f)
+        if (Mathf.Abs(vcam.m_Lens.FieldOfView - targetFov) > 0.1f)
         {
             // Simulate a bounce by temporarily setting a target beyond the final target
             float bounceTarget = targetFov + (targetFov - smoothFov) * 0.1f;
-            smoothFov = Mathf.SmoothDamp(mainCamera.fieldOfView, bounceTarget, ref currentFovVelocity, zoomDampTime);
-            mainCamera.fieldOfView = smoothFov;
+            smoothFov = Mathf.SmoothDamp(vcam.m_Lens.FieldOfView, bounceTarget, ref currentFovVelocity, zoomDampTime);
+            vcam.m_Lens.FieldOfView = smoothFov;
         }
         else
         {
-            mainCamera.fieldOfView = targetFov;
+            vcam.m_Lens.FieldOfView = targetFov;
         }
+
+        zoomLevel = Mathf.InverseLerp(minFov, maxFov, vcam.m_Lens.FieldOfView);
     }
 
     // 1. camera zoom in zoom out.
@@ -269,13 +286,7 @@ public class CameraController : MonoBehaviour
             HandleMouseDragInput();
         }
 
-        float currentSpeed = normalSpeed;
-
-        // Shift adds speed multiplier
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-        {
-            currentSpeed *= 1.5f;
-        }
+        Vector3 pos = cameraTransform.position;
 
         // Keyboard Control
         if (moveWithKeyboad)
@@ -289,29 +300,22 @@ public class CameraController : MonoBehaviour
                 movementSpeed = normalSpeed;
             }
 
-            Vector3 direction = Vector3.zero;
+            
 
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-            {
-                newPosition += (transform.forward * movementSpeed) * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-            {
-                newPosition += (transform.forward * -movementSpeed) * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-            {
-                newPosition += (transform.right * movementSpeed) * Time.deltaTime;
-            }
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-            {
-                newPosition += (transform.right * -movementSpeed) * Time.deltaTime;
-            }
+            if (Input.GetKey(KeyCode.W))
+                pos.z += movementSpeed * Time.deltaTime;
 
-            newPosition += direction * currentSpeed * Time.deltaTime;
+            if (Input.GetKey(KeyCode.S))
+                pos.z -= movementSpeed * Time.deltaTime;
+
+            if (Input.GetKey(KeyCode.A))
+                pos.x -= movementSpeed * Time.deltaTime;
+
+            if (Input.GetKey(KeyCode.D))
+                pos.x += movementSpeed * Time.deltaTime;
+
+
         }
-
-        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementSensitivity);
 
 
         // Edge Scrolling
@@ -321,7 +325,7 @@ public class CameraController : MonoBehaviour
             // Move Right
             if (Input.mousePosition.x > Screen.width - edgeSize)
             {
-                newPosition += (transform.right * movementSpeed) * Time.deltaTime;
+                pos.x += movementSpeed * Time.deltaTime;
                 ChangeCursor(CursorArrow.RIGHT);
                 isCursorSet = true;
             }
@@ -329,7 +333,7 @@ public class CameraController : MonoBehaviour
             // Move Left
             else if (Input.mousePosition.x < edgeSize)
             {
-                newPosition += (transform.right * -movementSpeed) * Time.deltaTime;
+                pos.x -= movementSpeed * Time.deltaTime;
                 ChangeCursor(CursorArrow.LEFT);
                 isCursorSet = true;
             }
@@ -337,7 +341,7 @@ public class CameraController : MonoBehaviour
             // Move Up
             else if (Input.mousePosition.y > Screen.height - edgeSize)
             {
-                newPosition += (transform.forward * movementSpeed) * Time.deltaTime;
+                pos.z += movementSpeed * Time.deltaTime;
                 ChangeCursor(CursorArrow.UP);
                 isCursorSet = true;
             }
@@ -345,7 +349,7 @@ public class CameraController : MonoBehaviour
             // Move Down
             else if (Input.mousePosition.y < edgeSize)
             {
-                newPosition += (transform.forward * -movementSpeed) * Time.deltaTime;
+                pos.z -= movementSpeed * Time.deltaTime;
                 ChangeCursor(CursorArrow.DOWN);
                 isCursorSet = true;
             }
@@ -359,7 +363,7 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementSensitivity);
+        cameraTransform.position = pos;
 
         Cursor.lockState = CursorLockMode.Confined; // If we have an extra monitor we don't want to exit screen bounds
     }
@@ -396,6 +400,7 @@ public class CameraController : MonoBehaviour
 
     private void HandleMouseDragInput()
     {
+
         if (Input.GetMouseButtonDown(2) && EventSystem.current.IsPointerOverGameObject() == false)
         {
             Plane plane = new Plane(Vector3.up, Vector3.zero);
@@ -419,7 +424,7 @@ public class CameraController : MonoBehaviour
             {
                 dragCurrentPosition = ray.GetPoint(entry);
 
-                newPosition = transform.position + dragStartPosition - dragCurrentPosition;
+                cameraTransform.position += dragStartPosition - dragCurrentPosition;
             }
         }
     }
