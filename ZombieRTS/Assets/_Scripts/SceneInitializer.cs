@@ -1,5 +1,7 @@
 using UnityEngine;
 
+
+// Makes sure AudioManager & GameManager are on all scenes. (if not starting from menu)
 public class SceneInitializer : MonoBehaviour
 {
     [SerializeField] private GameObject gameManagerPrefab;

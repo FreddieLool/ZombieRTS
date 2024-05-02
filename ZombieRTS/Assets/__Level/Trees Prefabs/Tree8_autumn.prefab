@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3333733750069095861}
   m_Layer: 13
   m_Name: Tree8_autumn
-  m_TagString: Untagged
+  m_TagString: PaintedPrefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

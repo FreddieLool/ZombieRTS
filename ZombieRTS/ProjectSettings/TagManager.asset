@@ -9,6 +9,7 @@ TagManager:
   - Unit
   - Building
   - Back Button
+  - PaintedPrefab
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - Terrain
   - Objects
   - Trees
-  - 
+  - PaintableObjects
   - 
   - 
   - 
@@ -45,4 +46,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Objects
+    uniqueID: 3675078859
     locked: 0

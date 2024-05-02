@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+/*using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitConstruction : MonoBehaviour
@@ -68,39 +68,25 @@ public class UnitConstruction : MonoBehaviour
     }
 
     // Spawns a unit of the given type from its corresponding pool
-    public void SpawnUnit(int unitType)
+*//*    public void SpawnUnit(UnitData unitData)
     {
-        if (pools == null || unitPrefabs == null)
-        {
-            Debug.LogError("Pools or UnitPrefabs are not initialized.");
-            return;
-        }
+        if (!CanSpawn(unitData)) return; // Check conditions like Zombie Den existence
 
-        if (unitType < 0 || unitType >= unitPrefabs.Length)
+        GameObject unitPrefab = unitData.prefab; // Assume prefab is part of UnitData
+        GameObject unitObject = Instantiate(unitPrefab, spawnLocation, Quaternion.identity);
+        Unit unitComponent = unitObject.GetComponent<Unit>();
+        if (unitComponent != null)
         {
-            Debug.LogError($"Invalid unit type: {unitType}");
-            return;
-        }
-
-        if (!pools.ContainsKey(unitType))
-        {
-            Debug.LogError($"No pool associated with unit type: {unitType}");
-            return;
-        }
-
-        Queue<GameObject> pool = pools[unitType];
-        if (pool.Count > 0)
-        {
-            GameObject objectToSpawn = pool.Dequeue();
-            objectToSpawn.transform.position = SelectionManager.Instance.GetSelectedBuilding().transform.position + Vector3.up * 1.0f; // Adjust Y offset
-            objectToSpawn.SetActive(true);
-
-            // Re-enqueue the object to enable reuse
-            pool.Enqueue(objectToSpawn);
-        }
-        else
-        {
-            Debug.LogWarning($"All objects of type {unitType} are active.");
+            unitComponent.Initialize(unitData);
         }
     }
+
+    bool CanSpawn(UnitData unitData)
+    {
+        // Example: Check for Zombie Den
+        return FindObjectOfType<ZombieDen>() != null;
+    }
+*//*
+
 }
+*/

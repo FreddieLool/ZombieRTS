@@ -235,6 +235,7 @@ public class MainMenu : MonoBehaviour
 
     private void OnHoverExit(Button button)
     {
+        // default button colors 
         if (button == creditsBackButton)
         {
             Color _creditsBackBtnColor;

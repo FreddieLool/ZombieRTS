@@ -115,19 +115,19 @@ public class LightingManager : MonoBehaviour
             {
                 // From 15:00 to 24:00
                 normTime = (time - 15) / (24 - 15);
-                vignette.intensity.value = Mathf.Lerp(0.25f, 0.66f, normTime);
+                vignette.intensity.value = Mathf.Lerp(0.15f, 0.45f, normTime);
             }
             else if (time <= 7.5)
             {
                 // From 0:00 to 7:50
                 normTime = time / 7.5f;
-                vignette.intensity.value = Mathf.Lerp(0.66f, 0.25f, normTime);
+                vignette.intensity.value = Mathf.Lerp(0.45f, 0.15f, normTime);
             }
         }
         else
         {
-            // Outside these hours, ensure it maintains the minimum intensity
-            vignette.intensity.value = 0.25f;
+            // Outside these hours, ensure it maintains the minimum default intensity
+            vignette.intensity.value = 0.15f;
         }
     }
 

@@ -34,7 +34,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioClip showBuildingUI, closeBuildingUI;
     [SerializeField] AudioClip newCycle;
 
-    [Header("- Night Sounds")]
+    [Header("- Game Sounds")]
     [SerializeField] private List<AudioClip> shortNightSounds; // Clips less than 10 seconds
     [SerializeField] private List<AudioClip> longNightSounds; // Clips longer than 30 seconds
     private bool isNightSoundScheduled = false;

@@ -86,14 +86,14 @@ public class UIManager : MonoBehaviour
 
     private void AnimateCycleText()
     {
-        cycleCounterText.transform.localScale = Vector3.one * 1.25f; // Increase size for animation
-        LeanTween.scale(cycleCounterText.gameObject, Vector3.one, 0.5f).setEase(LeanTweenType.easeOutElastic); // Animation back to normal size
+        cycleCounterText.transform.localScale = Vector3.one * 1.25f;
+        LeanTween.scale(cycleCounterText.gameObject, Vector3.one, 0.5f).setEase(LeanTweenType.easeOutElastic);
     }
 
 
     private bool IsPointerOverUIObject()
     {
-        // This returns true if the pointer is over any UI element
+        // true if the pointer is over any UI element
         return EventSystem.current.IsPointerOverGameObject();
     }
 
@@ -183,5 +183,17 @@ public class UIManager : MonoBehaviour
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
+    }
+
+    // UNIT UI
+
+    public void ToggleUnitMenu()
+    {
+        // Implementation to toggle unit menu visibility
+    }
+
+    public void OnUnitButtonClicked(string unitName)
+    {
+        MainBaseManager.Instance.SpawnUnit(unitName);
     }
 }

@@ -154,11 +154,11 @@ public class CameraController : MonoBehaviour
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
         // keys zoom Q & E
-        if (Input.GetKey(KeyCode.Q))
+        if (Input.GetKey(KeyCode.E))
         {
             scroll = -0.01f; // Simulate zoom out
         }
-        else if (Input.GetKey(KeyCode.E))
+        else if (Input.GetKey(KeyCode.Q))
         {
             scroll = 0.01f; // Simulate zoom in
         }
@@ -267,7 +267,7 @@ public class CameraController : MonoBehaviour
         // Shift adds speed multiplier
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
         {
-            currentSpeed *= 1.5f;
+            currentSpeed *= 2.221f;
         }
 
         // Keyboard Control

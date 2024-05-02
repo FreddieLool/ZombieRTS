@@ -161,17 +161,14 @@ public class SelectionManager : MonoBehaviour
             }
             // Do nothing if the building is already selected, thus not playing the sound again
         }
-        // Optionally, handle what happens if the building cannot be selected
     }
 
 
     // Building click animation
     private void StartSelectionPopAnimation(Transform buildingTransform)
     {
-        // Capture the original scale to ensure we can return to it exactly
         Vector3 originalScale = buildingTransform.localScale;
 
-        // Scale up slightly over 0.15 seconds
         LeanTween.scale(buildingTransform.gameObject, originalScale * 1.05f, 0.15f).setEase(LeanTweenType.easeOutQuad)
             .setOnComplete(() => {
                 // Scale back down to the exact original scale to complete the bounce effect

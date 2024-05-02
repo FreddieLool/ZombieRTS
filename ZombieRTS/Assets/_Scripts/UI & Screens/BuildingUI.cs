@@ -34,7 +34,7 @@ public class BuildingUI : MonoBehaviour
     {
         if (building != null && Camera.main != null)
         {
-            Vector3 offset = new Vector3(0, 5, 0);  // Adjust the Y offset as needed
+            Vector3 offset = new Vector3(0, 17, 0);  // Adjust the Y offset as needed
             transform.position = building.transform.position + offset;
             transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
         }

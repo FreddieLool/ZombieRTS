@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9180316408324041387}
   m_Layer: 13
   m_Name: Bush2_autumn
-  m_TagString: Untagged
+  m_TagString: PaintedPrefab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

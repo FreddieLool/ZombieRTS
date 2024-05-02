@@ -34,7 +34,9 @@ public class UnitController : MonoBehaviour
             CheckAndAnimateMarker();
         }
         UpdateMovementState();
+        UpdateSelectionIndicator();  // Ensure this is called every frame to adjust the ring.
     }
+
 
     private void MoveToLocation(Vector3 targetPosition)
     {
@@ -76,7 +78,7 @@ public class UnitController : MonoBehaviour
             groundMarker.transform.position = adjustedPosition;
 
             // Start a new animation to show the marker
-            LeanTween.moveLocalY(groundMarker, groundMarker.transform.position.y + 0.5f, 0.25f);
+            LeanTween.moveLocalY(groundMarker, groundMarker.transform.position.y + 2.5f, 0.25f);
         }
     }
 
@@ -133,12 +135,44 @@ public class UnitController : MonoBehaviour
         UpdateSelectionIndicator();
     }
 
-    // Update the visual selection indicator based on the current state
+    // Update based on the current state
     private void UpdateSelectionIndicator()
     {
         if (selectionIndicator != null)
         {
             selectionIndicator.SetActive(isSelected);
+            if (isSelected)
+            {
+                RaycastHit hit;
+                // Raycast down from the unit's position to find the ground
+                if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.down, out hit, 2f, groundLayer))
+                {
+                    // Determine if the slope's angle warrants a scale change
+                    float angleDifference = Vector3.Angle(Vector3.up, hit.normal);
+                    if (angleDifference > 10 && !isScalingDown) // Threshold angle is 10 degrees
+                    {
+                        isScalingDown = true;
+                        float targetScaleFactor = originalScale * 0.99f; // Slightly smaller than normal
+                        Vector3 targetScale = new Vector3(targetScaleFactor, targetScaleFactor, targetScaleFactor);
+                        LeanTween.scale(selectionIndicator, targetScale, 0.3f);
+                    }
+                    else if (angleDifference <= 10 && isScalingDown)
+                    {
+                        isScalingDown = false;
+                        LeanTween.scale(selectionIndicator, new Vector3(originalScale, originalScale, originalScale), 0.3f);
+                    }
+                }
+            }
         }
     }
+
+
+    private float originalScale = 0.075f; // Initialized to one to maintain original scale when not defined
+    private bool isScalingDown = false; // Flag to control the scaling state
+
+
+
+
+
+
 }

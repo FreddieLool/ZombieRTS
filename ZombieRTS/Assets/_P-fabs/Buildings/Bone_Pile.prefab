@@ -85,8 +85,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 3.0376663, y: 0.73, z: 2.1768875}
-  m_Center: {x: 0.061992645, y: 0.24000001, z: -0.63614655}
+  m_Size: {x: 7.77, y: 1.7, z: 4.83}
+  m_Center: {x: 0.061992645, y: 0.24000001, z: -1.85}
 --- !u!65 &6451563946857383736
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -106,8 +106,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 3.037666, y: 0.73, z: 2.176888}
-  m_Center: {x: 0.06199265, y: 0.24, z: -0.6361465}
+  m_Size: {x: 7.77, y: 1.7, z: 4.83}
+  m_Center: {x: 0.06199265, y: 0.24, z: -1.85}
 --- !u!208 &7383445531812314765
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -5006,8 +5006,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8847091689192174244}
   - {fileID: 1952819014998166587}
@@ -5391,12 +5391,12 @@ PrefabInstance:
     - target: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.18
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.18
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff,
         type: 3}
@@ -5416,7 +5416,7 @@ PrefabInstance:
     - target: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.509
+      value: -1.58
       objectReference: {fileID: 0}
     - target: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff,
         type: 3}
@@ -5452,6 +5452,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff,
+        type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
