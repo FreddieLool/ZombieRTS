@@ -28,6 +28,10 @@ public class CameraController : MonoBehaviour
     Vector3 dragStartPosition;
     Vector3 dragCurrentPosition;
 
+    [Header("Map Limit")]
+    public Vector2 minPos;
+    public Vector2 maxPos;
+
     [Header("Camera Controls")]
     public Transform playerTransform;
     private Vector3 targetPosition;
@@ -83,6 +87,30 @@ public class CameraController : MonoBehaviour
     public Texture2D cursorArrowDown;
     public Texture2D cursorArrowLeft;
     public Texture2D cursorArrowRight;
+
+
+
+    private Vector3 CameraPosition
+    {
+        get
+        {
+            return cameraTransform.position;
+        }
+
+        set
+        {
+            if (value.x < minPos.x)
+                value.x = minPos.x;
+            if(value.x > maxPos.x)
+                value.x = maxPos.x;
+            if(value.z < minPos.y)
+                value.z = minPos.y;
+            if(value.z > maxPos.y)
+                value.z = maxPos.y;
+
+            cameraTransform.position = value;
+        }
+    }
 
     CursorArrow currentCursor = CursorArrow.DEFAULT;
     enum CursorArrow
@@ -146,11 +174,11 @@ public class CameraController : MonoBehaviour
 
     public void SetCameraXZPosition(float x, float z)
     {
-        Vector3 pos = transform.position;
+        Vector3 pos = CameraPosition;
         pos.x = x;
-        pos.z = z - (transform.position.y / Mathf.Tan(Mathf.Deg2Rad * transform.rotation.eulerAngles.x));
+        pos.z = z - (CameraPosition.y / Mathf.Tan(Mathf.Deg2Rad * transform.rotation.eulerAngles.x));
 
-        transform.position = pos;
+        CameraPosition = pos;
     }
 
 
@@ -164,14 +192,14 @@ public class CameraController : MonoBehaviour
 
     private void UpdateAngle()
     {
-        Vector3 pos = transform.position;
+        Vector3 pos = CameraPosition;
         Vector3 rotation = transform.rotation.eulerAngles;
       
         float tAngle = angleCurve.Evaluate(zoomLevel);
         pos.y = Mathf.Lerp(minHeight, maxHeight, tAngle);
         rotation.x = Mathf.Lerp(minAngle, maxAngle, tAngle);
 
-        transform.position = pos;
+        CameraPosition = pos;
         transform.rotation = Quaternion.Euler(rotation);
 
 
@@ -181,8 +209,8 @@ public class CameraController : MonoBehaviour
     void FollowPlayer()
     {
         Vector3 desiredPosition = followTransform.position + followOffset;
-        Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
-        transform.position = smoothedPosition;
+        Vector3 smoothedPosition = Vector3.Lerp(CameraPosition, desiredPosition, smoothSpeed * Time.deltaTime);
+        CameraPosition = smoothedPosition;
 
     }
 
@@ -286,7 +314,7 @@ public class CameraController : MonoBehaviour
             HandleMouseDragInput();
         }
 
-        Vector3 pos = cameraTransform.position;
+        Vector3 pos = CameraPosition;
 
         // Keyboard Control
         if (moveWithKeyboad)
@@ -363,7 +391,7 @@ public class CameraController : MonoBehaviour
             }
         }
 
-        cameraTransform.position = pos;
+        CameraPosition = pos;
 
         Cursor.lockState = CursorLockMode.Confined; // If we have an extra monitor we don't want to exit screen bounds
     }
@@ -424,7 +452,7 @@ public class CameraController : MonoBehaviour
             {
                 dragCurrentPosition = ray.GetPoint(entry);
 
-                cameraTransform.position += dragStartPosition - dragCurrentPosition;
+                CameraPosition += dragStartPosition - dragCurrentPosition;
             }
         }
     }
