@@ -14,13 +14,80 @@ public class Enemy : MonoBehaviour
     public Transform[] patrolPoints;
     public Vector3 boxSize = Vector3.one;
     public float roamRadius = 5f;
-    public Transform playerTransform;
     public float speed = 2f;
     private Vector3 nextDestination;
 
+    public float attackRange = 10.0f;
+
+    private NavMeshAgent agent;
+    private Unit unit;
+    public float detectionRadius = 10f;
+    public LayerMask playerLayer;
+    public Transform target;
+    public int attackDamage;
+    public float attackRate = 1f;
+    private float attackCooldown;
+
+
     private void Start()
     {
-        StartCoroutine(BehaviorRoutine());
+        //StartCoroutine(BehaviorRoutine());
+        agent = GetComponent<NavMeshAgent>();
+        unit = GetComponent<Unit>();
+    }
+
+    void Update()
+    {
+        if (target == null || !target.gameObject.activeInHierarchy)
+        {
+            FindClosestTarget();
+        }
+        else
+        {
+            agent.SetDestination(target.position);
+            if (Vector3.Distance(transform.position, target.position) <= agent.stoppingDistance)
+            {
+                if (attackCooldown <= 0f)
+                {
+                    AttackPlayer();
+                    attackCooldown = 1f / attackRate;
+                }
+            }
+        }
+
+        if (attackCooldown > 0f)
+        {
+            attackCooldown -= Time.deltaTime;
+        }
+    }
+
+    void FindClosestTarget()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, playerLayer);
+        float closestDistance = float.MaxValue;
+
+        foreach (var hit in hits)
+        {
+            float distance = Vector3.Distance(transform.position, hit.transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                target = hit.transform;
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        // Draw detection radius in the editor
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+    }
+
+    private void AttackPlayer()
+    {
+        Debug.Log("Attacking the player with " + unit.attackDamage + " damage.");
+        // attack logic HERE
     }
 
     private IEnumerator BehaviorRoutine()

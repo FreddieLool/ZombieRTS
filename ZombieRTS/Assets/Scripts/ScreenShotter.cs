@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿/*using UnityEngine;
 using System.Collections;
 
 public class ScreenShotter : MonoBehaviour
@@ -28,4 +28,4 @@ public class ScreenShotter : MonoBehaviour
             StartCoroutine(RecordFrame());
                     
     }
-}
+}*/

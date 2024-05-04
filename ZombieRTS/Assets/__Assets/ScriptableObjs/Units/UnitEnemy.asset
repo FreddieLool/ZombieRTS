@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd818ebcfcd32b447992c25db0568fc3, type: 3}
+  m_Name: UnitEnemy
+  m_EditorClassIdentifier: 
+  unitName: Enemy
+  unitPrefab: {fileID: 7546479615879776948, guid: cc1733eb0270b794d988c27b60ac031b,
+    type: 3}
+  icon: {fileID: 0}
+  health: 50
+  attackDamage: 10
+  movementSpeed: 3
+  buildTime: 0
+  poolSize: 10
+  costs: []

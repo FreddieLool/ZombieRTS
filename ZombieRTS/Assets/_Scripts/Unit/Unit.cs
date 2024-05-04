@@ -1,19 +1,29 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 [RequireComponent(typeof(UnitController))]
 public class Unit : MonoBehaviour
 {
-    // Automatically registers the unit with the UnitSelectionManager upon instantiation
-    void Start()
-    {
-        // Adds this unit to the managed list of all units in the UnitSelectionManager
-        //UnitSelectionManager.Instance.AddUnit(this.gameObject);
-    }
+    public string unitName;
+    public int health;
+    public int maxHealth;
+    public int attackDamage;
+    public float movementSpeed;
 
-    // Automatically deregisters the unit from the UnitSelectionManager upon destruction
-    void OnDestroy()
+    // Initialize the unit's stats
+    public void Initialize(string name, int hp, int attack, float moveSpeed)
     {
-        // Removes this unit from the managed list of all units in the UnitSelectionManager
-        //UnitSelectionManager.Instance.RemoveUnit(this.gameObject);
+        unitName = name;
+        maxHealth = hp;
+        health = hp;
+        attackDamage = attack;
+        movementSpeed = moveSpeed;
+
+        // Configure the NavMeshAgent
+        var agent = GetComponent<NavMeshAgent>();
+        if (agent != null)
+        {
+            agent.speed = movementSpeed;
+        }
     }
 }

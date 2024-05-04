@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 
-public class SnowDeformByStep : MonoBehaviour
+// leaves blood traces, not used anymore..
+public class BloodTrace : MonoBehaviour
 {
     public Terrain terrain;
-    public float stepThreshold = 1f; // Distance the player must move before another deformation is applied
+    public float stepThreshold = 1f;
     public int brushSize = 1;
     public float opacity = 0.5f;
-    public int textureLayer = 1; // Index of the texture to apply
+    public int textureLayer = 12; // Index of the texture to apply (blood texture)
 
     private Vector3 lastStepPosition;
     private TerrainData terrainData;
@@ -54,7 +55,7 @@ public class SnowDeformByStep : MonoBehaviour
             {
                 if (!deformedPoints[brushStartX + x, brushStartZ + z])
                 {
-                    heights[x, z] -= opacity * 0.001f; // Adjust this factor based on desired depth per step
+                    heights[x, z] -= opacity * 0.001f; // factor based on desired depth per step
 
                     // Reset other textures' influence
                     for (int i = 0; i < terrainData.alphamapLayers; i++)

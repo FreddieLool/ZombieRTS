@@ -444,6 +444,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7761217824409558913}
   - component: {fileID: 4683065669827669607}
+  - component: {fileID: 8946697168819408775}
   m_Layer: 7
   m_Name: Highlight Ring
   m_TagString: Selectable_Char
@@ -459,13 +460,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3741772769197942356}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.70710677, y: -0, z: -0, w: 0.7071068}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.075, y: 0.075, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 789385251126115056}
-  m_LocalEulerAnglesHint: {x: 90.00001, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!212 &4683065669827669607
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -518,6 +519,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1818360609 &8946697168819408775
+RotationConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3741772769197942356}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Weight: 1
+  m_RotationAtRest: {x: 90, y: 0, z: 0}
+  m_RotationOffset: {x: 0, y: 0, z: 0}
+  m_AffectRotationX: 1
+  m_AffectRotationY: 0
+  m_AffectRotationZ: 0
+  m_Active: 1
+  m_IsLocked: 0
+  m_Sources: []
 --- !u!1 &3998274537959649944
 GameObject:
   m_ObjectHideFlags: 0
@@ -1013,8 +1032,10 @@ GameObject:
   - component: {fileID: 7264525279203519464}
   - component: {fileID: 4375226089885246549}
   - component: {fileID: 7682847525091545587}
+  - component: {fileID: 1116907611883947777}
+  - component: {fileID: 795256955722305712}
   m_Layer: 7
-  m_Name: 'Player '
+  m_Name: Z - Warrior
   m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1030,8 +1051,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 182.6, y: 0, z: 183}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 789385251126115056}
   - {fileID: 4891412317863345022}
@@ -1059,7 +1080,16 @@ MonoBehaviour:
       m_Calls: []
   isSelected: 0
   selectionIndicator: {fileID: 3741772769197942356}
-  groundMarker: {fileID: 0}
+  groundMarker: {fileID: 6292710908751836646, guid: 8f91ddfc8e56ab94e82d243da9b52942,
+    type: 3}
+  groundMarkerPrefab: {fileID: 6292710908751836646, guid: 8f91ddfc8e56ab94e82d243da9b52942,
+    type: 3}
+  unitData: {fileID: 11400000, guid: 61d691ed92d5fb448b9ddd8253d43af0, type: 2}
+  isEnemy: 0
+  formationPatterns:
+  - type: 0
+    positions:
+    - {x: 0, y: 0}
 --- !u!114 &161300698329310355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1135,7 +1165,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 4
+  m_Radius: 4.66
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!195 &7682847525091545587
 NavMeshAgent:
@@ -1147,9 +1177,9 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.44
-  m_Speed: 1.5
+  m_Speed: 7
   m_Acceleration: 8
-  avoidancePriority: 50
+  avoidancePriority: 1
   m_AngularSpeed: 120
   m_StoppingDistance: 0.1
   m_AutoTraverseOffMeshLink: 1
@@ -1159,6 +1189,40 @@ NavMeshAgent:
   m_BaseOffset: 0.44
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1116907611883947777
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7546479615879776948}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 425f614f03c4a474fa75d2df38981bf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitName: 
+  health: 100
+  maxHealth: 0
+  attackDamage: 7
+  movementSpeed: 120
+--- !u!114 &795256955722305712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7546479615879776948}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56e17f175c5859459ae3b5ddcae64be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  terrain: {fileID: 0}
+  stepThreshold: 0.5
+  brushSize: 1
+  opacity: 0.123
+  textureLayer: 12
 --- !u!1 &7794389450279329449
 GameObject:
   m_ObjectHideFlags: 0

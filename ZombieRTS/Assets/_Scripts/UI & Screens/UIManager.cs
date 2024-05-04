@@ -12,11 +12,11 @@ public class UIManager : MonoBehaviour
 
     // Building UI
     [SerializeField] GameObject buildingUI;
-    [SerializeField] private RectTransform buildingUIRectTransform;  // Assuming you have a RectTransform for the UI
-    private bool isBuildingUIVisible = false;  // Track visibility state of the building UI
+    [SerializeField] private RectTransform buildingUIRectTransform; 
+    private bool isBuildingUIVisible = false; 
 
     // ----------------
-
+    
 
 
     [SerializeField] private BuildingData[] buildings; // all buildings
@@ -29,10 +29,24 @@ public class UIManager : MonoBehaviour
 
 
     // Building Info UI
-    public Transform target; // The building's transform
-    public Vector3 offset = new Vector3(0, 5, 0); // Offset to display above the building
+    private Transform target; // The building's transform
+    private Vector3 offset = new Vector3(0, 5, 0); 
     [SerializeField] private GameObject infoUIPrefab; // The world-space canvas prefab
     private GameObject activeInfoUI; // Currently active UI instance
+
+
+    // Unit Panel
+    public Transform unitConstructionParent;  // Parent object for unit construction UIs
+    public GameObject unitConstructionPrefab;
+    [SerializeField] private UnitData[] units; // Array of all units
+    [SerializeField] private GameObject unitButtonPrefab; // Prefab for the unit buttons
+    [SerializeField] private Transform unitButtonParent; // Parent transform for unit buttons
+    [SerializeField] private GameObject unitPanelUI; 
+    [SerializeField] private RectTransform unitPanelRectTransform;
+    private bool isUnitPanelVisible = false;
+
+
+
 
     void Awake()
     {
@@ -51,12 +65,18 @@ public class UIManager : MonoBehaviour
     {
         LightingManager.Instance.onNewCycle.AddListener(UpdateCycleCounter);
         PopulateBuildingButtons();
+        PopulateUnitButtons();
+
         cycleCounterText.text = "" + 1;
-        buildingUI.SetActive(false);  // Start with the UI hidden
+        buildingUI.SetActive(false); 
+        unitPanelUI.SetActive(false);
     }
+
+
     void Update()
     {
         HandleBuildingUIToggle();
+        HandleUnitPanelToggle();
 
         if (Input.GetMouseButtonDown(0) && !IsPointerOverUIObject())
         {
@@ -77,6 +97,82 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    // Unit Panel
+
+    private void HandleUnitPanelToggle()
+    {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            ToggleUnitPanelUI();
+        }
+    }
+
+    private void ToggleUnitPanelUI()
+    {
+        if (!isUnitPanelVisible)
+        {
+            ShowUnitPanelUI();
+        }
+        else
+        {
+            HideUnitPanelUI();
+        }
+    }
+
+    private void ShowUnitPanelUI()
+    {
+        unitPanelUI.SetActive(true);
+        isUnitPanelVisible = true;
+        Vector3 startPosition = new Vector3(unitPanelRectTransform.anchoredPosition.x, -unitPanelRectTransform.rect.height, 0);
+        Vector3 endPosition = Vector3.zero;
+
+        unitPanelRectTransform.anchoredPosition = startPosition;
+        LeanTween.move(unitPanelRectTransform, endPosition, 0.35f).setEase(LeanTweenType.easeOutExpo);
+        AudioManager.Instance.PlaySoundEffect(SoundEffect.ShowUIBuilding);
+    }
+
+    private void HideUnitPanelUI()
+    {
+        Vector3 endPosition = new Vector3(unitPanelRectTransform.anchoredPosition.x, -unitPanelRectTransform.rect.height, 0);
+        AudioManager.Instance.PlaySoundEffect(SoundEffect.CloseUIBuilding);
+        LeanTween.move(unitPanelRectTransform, endPosition, 0.25f).setEase(LeanTweenType.easeInExpo).setOnComplete(() =>
+        {
+            unitPanelUI.SetActive(false);
+            isUnitPanelVisible = false;
+        });
+    }
+
+    private void PopulateUnitButtons()
+    {
+        foreach (var unit in units)
+        {
+            GameObject btnObj = Instantiate(unitButtonPrefab, unitButtonParent);
+            UnitButton unitButton = btnObj.GetComponent<UnitButton>();
+            unitButton.Setup(unit);
+            UnitData currentUnit = unit;
+            unitButton.button.onClick.AddListener(() => OnUnitButtonClicked(currentUnit));
+        }
+    }
+
+    public void OnUnitButtonClicked(UnitData unitData)
+    {
+        if (ResourceManager.Instance.HasEnoughResources(unitData.costs))
+        {
+            ResourceManager.Instance.DeductResources(unitData.costs);
+            StartUnitConstruction(unitData);
+        }
+        else
+        {
+            Debug.Log("Not enough resources!");
+        }
+    }
+
+    public void StartUnitConstruction(UnitData unitData)
+    {
+        GameObject uiObj = Instantiate(unitConstructionPrefab, unitConstructionParent);
+        uiObj.GetComponent<UnitConstructionUI>().Initialize(unitData.icon, unitData.buildTime, unitData);
+    }
+
     private void UpdateCycleCounter()
     {
         int currentCycle = LightingManager.Instance.GetCurrentCycle();
@@ -90,13 +186,11 @@ public class UIManager : MonoBehaviour
         LeanTween.scale(cycleCounterText.gameObject, Vector3.one, 0.5f).setEase(LeanTweenType.easeOutElastic);
     }
 
-
     private bool IsPointerOverUIObject()
     {
         // true if the pointer is over any UI element
         return EventSystem.current.IsPointerOverGameObject();
     }
-
 
     private void PopulateBuildingButtons()
     {
@@ -133,7 +227,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    // Toggles the building UI visibility
+    // Building UI Info
     private void HandleBuildingUIToggle()
     {
         if (Input.GetKeyDown(KeyCode.B))
@@ -163,7 +257,7 @@ public class UIManager : MonoBehaviour
         Vector3 endPosition = new Vector3(0, buildingUIRectTransform.anchoredPosition.y, 0);  // Assuming the UI fits at x=0 when fully visible
 
         buildingUIRectTransform.anchoredPosition = startPosition;
-        LeanTween.move(buildingUIRectTransform, endPosition, 0.75f).setEase(LeanTweenType.easeOutExpo);
+        LeanTween.move(buildingUIRectTransform, endPosition, 0.35f).setEase(LeanTweenType.easeOutExpo);
         AudioManager.Instance.PlaySoundEffect(SoundEffect.ShowUIBuilding);
     }
 
@@ -171,26 +265,15 @@ public class UIManager : MonoBehaviour
     {
         Vector3 endPosition = new Vector3(Screen.width, buildingUIRectTransform.anchoredPosition.y, 0);
         AudioManager.Instance.PlaySoundEffect(SoundEffect.CloseUIBuilding);
-        LeanTween.move(buildingUIRectTransform, endPosition, 0.5f).setEase(LeanTweenType.easeInExpo).setOnComplete(() =>
+        LeanTween.move(buildingUIRectTransform, endPosition, 0.25f).setEase(LeanTweenType.easeInExpo).setOnComplete(() =>
         {
             buildingUI.SetActive(false);
             isBuildingUIVisible = false;
         });
     }
 
-    // Building UI Info
-
-    public void SetTarget(Transform newTarget)
-    {
-        target = newTarget;
-    }
 
     // UNIT UI
-
-    public void ToggleUnitMenu()
-    {
-        // Implementation to toggle unit menu visibility
-    }
 
     public void OnUnitButtonClicked(string unitName)
     {

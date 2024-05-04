@@ -86,7 +86,7 @@ public class BuildingManager : MonoBehaviour
 
     // HandleBuildingPlacement method related
     Vector3 originalScale;
-    bool isScalingDown = false; // Flag to control the scaling state
+    bool isScalingDown = false;
     private int rotationYOffset = 0; // Degrees offset by manual rotation
     Quaternion baseRotation;
     private void HandleBuildingPlacement()
@@ -315,7 +315,6 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
-
     public void SelectBuilding(BuildingData building)
     {
         previewBuilding = building; // Set by UI button
@@ -398,8 +397,6 @@ public class BuildingManager : MonoBehaviour
         Debug.Log("Placement succeeded.");
         return true;
     }
-
-
 
     private void TriggerInvalidPlacementAnimation(Transform buildingTransform)
     {

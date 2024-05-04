@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using static AudioManager;
 
@@ -62,43 +63,45 @@ public class SelectionManager : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            bool isCtrlHeld = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
             startPosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
             if (Physics.Raycast(ray, out hit))
             {
-                // Check if the hit object is a unit
                 if (hit.collider.CompareTag("Unit"))
                 {
                     GameObject hitUnit = hit.collider.gameObject;
-                    // Toggle unit selection (select if not already selected, deselect if already selected)
-                    if (selectedUnits.Contains(hitUnit))
+                    if (selectedUnits.Contains(hitUnit) && isCtrlHeld)
                     {
-                        DeselectUnit(hitUnit);  // Deselect this specific unit
+                        DeselectUnit(hitUnit);
+                    }
+                    else if (!selectedUnits.Contains(hitUnit) && isCtrlHeld)
+                    {
+                        SelectUnit(hitUnit);
                     }
                     else
                     {
-                        DeselectAll();  // Deselect everything else
-                        SelectUnit(hitUnit);  // Select this unit
+                        DeselectAll();
+                        SelectUnit(hitUnit);
                     }
                 }
-                // Check if the hit object is a building
                 else if (hit.collider.CompareTag("Building"))
                 {
                     SelectBuilding(hit.collider.gameObject);
                 }
                 else
                 {
-                    DeselectAll();  // Clicked on something else, deselect all
+                    if (!isCtrlHeld) DeselectAll();
                 }
             }
             else
             {
-                DeselectAll();  // Clicked on nothing, deselect all
+                if (!isCtrlHeld) DeselectAll();
             }
 
-            isDragging = false;  // Reset dragging state just in case
+            isDragging = false;
         }
 
         if (Input.GetMouseButton(0))
@@ -163,7 +166,6 @@ public class SelectionManager : MonoBehaviour
         }
     }
 
-
     // Building click animation
     private void StartSelectionPopAnimation(Transform buildingTransform)
     {
@@ -171,12 +173,9 @@ public class SelectionManager : MonoBehaviour
 
         LeanTween.scale(buildingTransform.gameObject, originalScale * 1.05f, 0.15f).setEase(LeanTweenType.easeOutQuad)
             .setOnComplete(() => {
-                // Scale back down to the exact original scale to complete the bounce effect
                 LeanTween.scale(buildingTransform.gameObject, originalScale, 0.1f).setEase(LeanTweenType.easeInQuad);
             });
     }
-
-
 
     private void DeselectBuilding()
     {
@@ -198,6 +197,12 @@ public class SelectionManager : MonoBehaviour
         return  selectedBuilding;
     }
 
+    // Retrieve the currently selected units as UnitController instances
+    public List<UnitController> GetSelectedUnitControllers()
+    {
+        return selectedUnits.Select(unit => unit.GetComponent<UnitController>()).ToList();
+    }
+
     private void SelectUnit(GameObject unit)
     {
         if (!selectedUnits.Contains(unit))
@@ -207,9 +212,14 @@ public class SelectionManager : MonoBehaviour
             if (unitController != null)
             {
                 unitController.ToggleSelection(true);
+                Unit unitComponent = unitController.GetComponent<Unit>();
+                if (unitComponent != null)
+                {
+                    UnitInfoDisplay.Instance.UpdateUnitInfo(unitComponent);
+                }
             }
 
-            AudioManager.Instance.PlayRandomUnitSelectedSound();
+            //AudioManager.Instance.PlayRandomUnitSelectedSound();
 
             // change this
             AudioManager.Instance.PlaySoundEffect(SoundEffect.ClickOnBuilding);
@@ -227,6 +237,11 @@ public class SelectionManager : MonoBehaviour
                 unitController.ToggleSelection(false);
             }
         }
+
+        if (selectedUnits.Count == 0)
+        {
+            UnitInfoDisplay.Instance.ClearInfo();
+        }
     }
 
     private void SelectUnitsInBox()
@@ -234,12 +249,11 @@ public class SelectionManager : MonoBehaviour
         Rect screenRect = GetScreenRect(startPosition, endPosition);
         foreach (GameObject unit in GameObject.FindGameObjectsWithTag("Unit"))
         {
-            if (unit.layer == LayerMask.NameToLayer("ClickableUnit"))
+            Vector3 unitScreenPos = mainCamera.WorldToScreenPoint(unit.transform.position);
+            unitScreenPos.y = Screen.height - unitScreenPos.y; // Convert to GUI coordinates
+            if (screenRect.Contains(unitScreenPos))
             {
-                if (screenRect.Contains(mainCamera.WorldToScreenPoint(unit.transform.position), true))
-                {
-                    SelectUnit(unit);
-                }
+                SelectUnit(unit);
             }
         }
     }
@@ -260,6 +274,7 @@ public class SelectionManager : MonoBehaviour
             }
         }
         selectedUnits.Clear();
+        UnitInfoDisplay.Instance.ClearInfo();
     }
 
     private void UpdateSelectionInBox()
@@ -296,6 +311,5 @@ public class SelectionManager : MonoBehaviour
         // Update the current selection
         selectedUnits = new List<GameObject>(currentlyHoveredUnits);
     }
-
 }
 

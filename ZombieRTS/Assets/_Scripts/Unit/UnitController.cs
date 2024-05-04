@@ -1,6 +1,26 @@
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+
+
+public enum FormationType
+{
+    Line,
+    Triangle,
+    Rectangle
+}
+
+[System.Serializable]
+public class FormationPattern
+{
+    public FormationType type;
+    public Vector2[] positions;
+}
+
+
 
 public class UnitController : MonoBehaviour
 {
@@ -9,9 +29,18 @@ public class UnitController : MonoBehaviour
     public LayerMask groundLayer;
     public bool isCommandedToMove;
     public UnityEvent<bool> onMovementStateChanged;
-    public bool isSelected = false;  // Tracks if this unit is selected
+    public bool isSelected = false;
     [SerializeField] GameObject selectionIndicator;
     public GameObject groundMarker;
+
+    [SerializeField] private GameObject groundMarkerPrefab;
+
+
+
+    // UNit data
+    public UnitData unitData;
+    public bool isEnemy = false;
+
 
 
     void Start()
@@ -23,107 +52,172 @@ public class UnitController : MonoBehaviour
         }
         isSelected = false; // player is not selected at start
         UpdateSelectionIndicator();
+
+        if (unitData != null)
+        {
+            ApplyUnitData();
+        }
+        else
+        {
+            Debug.LogError("UnitData not set for " + gameObject.name);
+        }
+
+        if (agent != null)
+        {
+            agent.avoidancePriority = Random.Range(20, 50); // Randomize priority for unit crowding..
+        }
     }
 
 
     void Update()
     {
-        ProcessInput();
-        if (agent != null && agent.hasPath)
+        if (!isEnemy) // Only process input for non-enemy units
         {
-            CheckAndAnimateMarker();
+            ProcessInput();
+            if (agent != null && agent.hasPath)
+            {
+                // Check the distance to the ground marker and animate if close enough
+                MarkerManager.Instance.CheckAndAnimateMarker(transform.position);
+            }
+
+            UpdateSelectionIndicator();
+
+            if (Input.GetKeyDown(KeyCode.F) && isSelected)
+            {
+                List<UnitController> selectedUnits = SelectionManager.Instance.GetSelectedUnitControllers();
+                Vector3 centerPosition = CalculateCenterPosition(selectedUnits);
+                CommandUnitsToMove(centerPosition, FormationType.Rectangle, selectedUnits);
+            }
         }
         UpdateMovementState();
-        UpdateSelectionIndicator();  // Ensure this is called every frame to adjust the ring.
     }
 
-
-    private void MoveToLocation(Vector3 targetPosition)
+    public void ApplyUnitData()
     {
-        if (agent != null)
+        if (unitData != null)
         {
-            agent.SetDestination(targetPosition);
-            animationTriggered = false;
+            var unitStats = GetComponent<Unit>();
+            if (!unitStats)
+                unitStats = gameObject.AddComponent<Unit>();
+
+            // Apply data from the scriptable object
+            unitStats.Initialize(unitData.unitName, unitData.health, unitData.attackDamage, unitData.movementSpeed);
+        }
+        else
+        {
+            Debug.LogError("No unit data provided!");
+        }
+    }
+
+    private Vector3[] CalculateFormationPositions(FormationType formationType, int count, Vector3 center)
+    {
+        Vector3[] positions = new Vector3[count];
+        float interval = 1.0f;  // Distance between units
+
+        switch (formationType)
+        {
+            case FormationType.Line:
+                for (int i = 0; i < count; i++)
+                {
+                    // Spread units out along the x-axis
+                    positions[i] = new Vector3(center.x + (i - count / 2.0f) * interval, center.y, center.z);
+                }
+                break;
         }
 
-        AudioManager.Instance.PlayRandomUnitMoveCommandSound();
+        return positions;
     }
+
+    private Vector3 CalculateCenterPosition(List<UnitController> units)
+    {
+        Vector3 sum = Vector3.zero;
+        foreach (var unit in units)
+        {
+            sum += unit.transform.position;
+        }
+        return sum / units.Count; // Average position
+    }
+
+    public void MoveToLocation(Vector3 position)
+    {
+        if (agent == null)
+        {
+            agent = GetComponent<NavMeshAgent>();
+            if (agent == null)
+            {
+                Debug.LogError("NavMeshAgent not found on " + gameObject.name);
+                return;
+            }
+        }
+
+        // Dynamically adjust the stopping distance based on the number of selected units
+        agent.stoppingDistance = Mathf.Clamp(SelectionManager.Instance.GetSelectedUnitControllers().Count * 0.1f, 1.0f, 5.0f);
+        agent.radius = Mathf.Clamp(0.5f - SelectionManager.Instance.GetSelectedUnitControllers().Count * 0.01f, 0.1f, 0.5f);
+
+        agent.destination = position;
+        isCommandedToMove = true;
+    }
+
+
+
+    [SerializeField]
+    private FormationPattern[] formationPatterns;
+
+    private void CommandUnitsToMove(Vector3 center, FormationType formationType, List<UnitController> units)
+    {
+        Vector3[] positions = CalculateFormationPositions(formationType, units.Count, center);
+        for (int i = 0; i < units.Count; i++)
+        {
+            units[i].MoveToLocation(positions[i]);
+        }
+    }
+
+
 
     private void ProcessInput()
     {
-        if (Input.GetMouseButtonDown(1) && isSelected)
+        if (!isEnemy && Input.GetMouseButtonDown(1) && isSelected)
         {
             RaycastHit hit;
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, groundLayer))
             {
-                MoveToLocation(hit.point);
-                ShowGroundMarker(hit.point);
+                Vector3 targetPosition = hit.point;
+                MarkerManager.Instance.ShowMarker(targetPosition);
+                MoveToLocation(targetPosition);
             }
         }
     }
-
-    private void ShowGroundMarker(Vector3 position)
-    {
-        if (groundMarker != null)
-        {
-            // Stop any ongoing animations and reset the marker state
-            LeanTween.cancel(groundMarker);
-            groundMarker.transform.localScale = new Vector3(1f, 1f, 1f);  // Reset scale
-            groundMarker.SetActive(true);
-
-            // Adjust the position with an offset
-            float heightOffset = 1f;
-            Vector3 adjustedPosition = new Vector3(position.x, position.y + heightOffset, position.z);
-            groundMarker.transform.position = adjustedPosition;
-
-            // Start a new animation to show the marker
-            LeanTween.moveLocalY(groundMarker, groundMarker.transform.position.y + 2.5f, 0.25f);
-        }
-    }
-
 
     private void UpdateMovementState()
     {
         if (agent && !agent.pathPending)
         {
+            float proximityRadius = 1.5f; // Radius to check for other units
+            Collider[] hitColliders = Physics.OverlapSphere(transform.position, proximityRadius, 1 << LayerMask.NameToLayer("ClickableUnit")); // Assuming all units are on a "Unit" layer
+            bool isCrowded = hitColliders.Length > 1; // More than 1 because the unit will detect itself
+
+            // Adjust stopping distance based on crowd density
+            agent.stoppingDistance = isCrowded ? 5.0f : 0.1f;
+
             if (agent.remainingDistance > agent.stoppingDistance && agent.velocity.sqrMagnitude > 0f)
             {
                 if (!isCommandedToMove)
                 {
                     isCommandedToMove = true;
-                    Debug.Log("Invoking");
                     onMovementStateChanged.Invoke(true);
+                }
+                if(hitColliders.Length >= 4 && agent.remainingDistance <= 10)
+                {
+                    isCommandedToMove = false;
+                    onMovementStateChanged.Invoke(false);
                 }
             }
             else if (isCommandedToMove && (agent.remainingDistance <= agent.stoppingDistance || agent.velocity.sqrMagnitude == 0f))
             {
                 isCommandedToMove = false;
-                Debug.Log("Invoking false");
                 onMovementStateChanged.Invoke(false);
             }
-        }
-    }
-
-    bool animationTriggered = false;
-    private void CheckAndAnimateMarker()
-    {
-        float distanceToMarker = Vector3.Distance(agent.transform.position, groundMarker.transform.position);
-        float triggerDistance = 2.5f;  // distance at which the marker should start moving up
-
-        if (distanceToMarker <= triggerDistance && !animationTriggered)
-        {
-            animationTriggered = true; // prevent re-triggering
-            LeanTween.moveLocalY(groundMarker, groundMarker.transform.position.y + 1.234f, 1.777f)
-                .setOnComplete(() => {
-                    LeanTween.scale(groundMarker, Vector3.zero, 0.133f)
-                        .setOnComplete(() => {
-                            groundMarker.SetActive(false);
-                            groundMarker.transform.localScale = new Vector3(1f, 1f, 1f);
-                            groundMarker.transform.position = new Vector3(groundMarker.transform.position.x, groundMarker.transform.position.y - 0.5f, groundMarker.transform.position.z);
-                            animationTriggered = false; // flag reset once animation completes
-                        });
-                });
         }
     }
 
@@ -144,15 +238,13 @@ public class UnitController : MonoBehaviour
             if (isSelected)
             {
                 RaycastHit hit;
-                // Raycast down from the unit's position to find the ground
                 if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.down, out hit, 2f, groundLayer))
                 {
-                    // Determine if the slope's angle warrants a scale change
                     float angleDifference = Vector3.Angle(Vector3.up, hit.normal);
-                    if (angleDifference > 10 && !isScalingDown) // Threshold angle is 10 degrees
+                    if (angleDifference > 10 && !isScalingDown)
                     {
                         isScalingDown = true;
-                        float targetScaleFactor = originalScale * 0.99f; // Slightly smaller than normal
+                        float targetScaleFactor = originalScale * 0.99f;
                         Vector3 targetScale = new Vector3(targetScaleFactor, targetScaleFactor, targetScaleFactor);
                         LeanTween.scale(selectionIndicator, targetScale, 0.3f);
                     }
@@ -167,12 +259,7 @@ public class UnitController : MonoBehaviour
     }
 
 
-    private float originalScale = 0.075f; // Initialized to one to maintain original scale when not defined
+    private float originalScale = 0.075f; 
     private bool isScalingDown = false; // Flag to control the scaling state
-
-
-
-
-
 
 }

@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class ResourceManager : MonoBehaviour
 {
     public static ResourceManager Instance;
+
+    [SerializeField]
+    private List<ResourceCost> initialResources = new List<ResourceCost>();
+
     private Dictionary<string, int> resources = new Dictionary<string, int>();
 
     void Awake()
@@ -12,43 +16,53 @@ public class ResourceManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            InitializeResources();
         }
-        else
+        else if (Instance != this)
         {
             Destroy(gameObject);
         }
     }
 
-    public bool HasEnoughResources(Dictionary<string, int> costs)
+    private void InitializeResources()
     {
-        foreach (var cost in costs)
+        // Populate the resources dictionary with initial values from the inspector
+        foreach (ResourceCost resource in initialResources)
         {
-            if (!resources.ContainsKey(cost.Key) || resources[cost.Key] < cost.Value)
+            resources[resource.resourceName] = resource.amount;
+        }
+    }
+
+    public bool HasEnoughResources(List<ResourceCost> costs)
+    {
+        foreach (ResourceCost cost in costs)
+        {
+            if (!resources.ContainsKey(cost.resourceName) || resources[cost.resourceName] < cost.amount)
                 return false;
         }
         return true;
     }
 
-    public void ConsumeResources(Dictionary<string, int> costs)
+    public void DeductResources(List<ResourceCost> costs)
     {
-        foreach (var cost in costs)
+        foreach (ResourceCost cost in costs)
         {
-            if (resources.ContainsKey(cost.Key))
+            if (resources.ContainsKey(cost.resourceName))
             {
-                resources[cost.Key] -= cost.Value;
+                resources[cost.resourceName] -= cost.amount;
             }
         }
     }
 
-    public void AddResources(string type, int amount)
+    public void AddResource(string resourceName, int amount)
     {
-        if (resources.ContainsKey(type))
+        if (resources.ContainsKey(resourceName))
         {
-            resources[type] += amount;
+            resources[resourceName] += amount;
         }
         else
         {
-            resources.Add(type, amount);
+            resources[resourceName] = amount;
         }
     }
 }
