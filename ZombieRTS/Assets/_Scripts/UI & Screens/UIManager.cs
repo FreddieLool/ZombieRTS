@@ -28,6 +28,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cycleCounterText;
 
 
+    // Resource Stats
+    [SerializeField] private TextMeshProUGUI boneResourcesTxt;
+    [SerializeField] private TextMeshProUGUI biohazardResourcesTxt;
+    [SerializeField] private TextMeshProUGUI fleshResourcesTxt;
+
+
     // Building Info UI
     private Transform target; // The building's transform
     private Vector3 offset = new Vector3(0, 5, 0); 
@@ -70,6 +76,7 @@ public class UIManager : MonoBehaviour
         cycleCounterText.text = "" + 1;
         buildingUI.SetActive(false); 
         unitPanelUI.SetActive(false);
+        UpdateResourceUI();
     }
 
 
@@ -94,6 +101,16 @@ public class UIManager : MonoBehaviour
 
             // If the raycast didn't hit a building or if it's a click in empty space, hide the UI
             HideUI();
+        }
+    }
+
+    public void UpdateResourceUI()
+    {
+        if (ResourceManager.Instance != null)
+        {
+            boneResourcesTxt.text = ResourceManager.Instance.GetResourceAmount("Bone").ToString();
+            biohazardResourcesTxt.text = ResourceManager.Instance.GetResourceAmount("Biohazard").ToString();
+            fleshResourcesTxt.text = ResourceManager.Instance.GetResourceAmount("Flesh").ToString();
         }
     }
 

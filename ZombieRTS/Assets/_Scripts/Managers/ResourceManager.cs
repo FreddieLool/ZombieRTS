@@ -43,6 +43,15 @@ public class ResourceManager : MonoBehaviour
         return true;
     }
 
+    public int GetResourceAmount(string resourceName)
+    {
+        if (resources.TryGetValue(resourceName, out int amount))
+        {
+            return amount;
+        }
+        return 0; // Return zero if the resource is not found
+    }
+
     public void DeductResources(List<ResourceCost> costs)
     {
         foreach (ResourceCost cost in costs)
@@ -50,6 +59,7 @@ public class ResourceManager : MonoBehaviour
             if (resources.ContainsKey(cost.resourceName))
             {
                 resources[cost.resourceName] -= cost.amount;
+                UIManager.Instance.UpdateResourceUI();  // Update UI after change
             }
         }
     }
@@ -59,6 +69,7 @@ public class ResourceManager : MonoBehaviour
         if (resources.ContainsKey(resourceName))
         {
             resources[resourceName] += amount;
+            UIManager.Instance.UpdateResourceUI();  // Update UI after change
         }
         else
         {
