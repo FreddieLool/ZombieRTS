@@ -1092,6 +1092,10 @@ MonoBehaviour:
   - type: 0
     positions:
     - {x: 0, y: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  targetUnit: {fileID: 0}
 --- !u!114 &161300698329310355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1207,8 +1211,8 @@ MonoBehaviour:
   health: 100
   maxHealth: 0
   attackDamage: 3
-  movementSpeed: 7
-  attackRange: 2
+  movementSpeed: 3
+  attackRange: 5
   attackRate: 1
 --- !u!114 &795256955722305712
 MonoBehaviour:

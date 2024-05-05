@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 7682847525091545587}
-  unit: {fileID: 0}
+  unit: {fileID: 1116907611883947777}
   target: {fileID: 0}
   groundLayer:
     serializedVersion: 2
@@ -201,8 +201,7 @@ MonoBehaviour:
       m_Calls: []
   isSelected: 0
   selectionIndicator: {fileID: 3741772769197942356}
-  groundMarker: {fileID: 6292710908751836646, guid: 8f91ddfc8e56ab94e82d243da9b52942,
-    type: 3}
+  groundMarker: {fileID: 0}
   groundMarkerPrefab: {fileID: 6292710908751836646, guid: 8f91ddfc8e56ab94e82d243da9b52942,
     type: 3}
   unitData: {fileID: 11400000, guid: 61d691ed92d5fb448b9ddd8253d43af0, type: 2}
@@ -211,6 +210,10 @@ MonoBehaviour:
   - type: 0
     positions:
     - {x: 0, y: 0}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 32768
+  targetUnit: {fileID: 0}
 --- !u!114 &161300698329310355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -326,8 +329,8 @@ MonoBehaviour:
   health: 100
   maxHealth: 0
   attackDamage: 7
-  movementSpeed: 120
-  attackRange: 2
+  movementSpeed: 7
+  attackRange: 6
   attackRate: 1
 --- !u!114 &795256955722305712
 MonoBehaviour:
