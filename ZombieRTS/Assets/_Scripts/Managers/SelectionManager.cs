@@ -12,7 +12,8 @@ public class SelectionManager : MonoBehaviour
 
     private List<GameObject> selectedUnits = new List<GameObject>();
     private GameObject selectedBuilding;
-
+    private bool isAttackMode = false;
+    [SerializeField] public Texture2D attackModeCursorTexture;
     public static SelectionManager Instance { get; private set; }
 
     void Awake()
@@ -47,6 +48,11 @@ public class SelectionManager : MonoBehaviour
             endPosition = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
             UpdateSelectionInBox(); // Update the selection in real-time
         }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            StartAttackMode();
+        }
     }
 
     void OnGUI()
@@ -56,6 +62,29 @@ public class SelectionManager : MonoBehaviour
             var rect = GetScreenRect(startPosition, endPosition);
             DrawScreenRect(rect, new Color(1f, 0f, 0f, 0.25f)); 
             DrawScreenRectBorder(rect, 2, Color.red);
+        }
+    }
+
+
+    private void StartAttackMode()
+    {
+        // Assume you enter a mode where the next click on an enemy unit commands selected units to attack
+        Debug.Log("Attack mode active. Click on an enemy to attack.");
+    }
+
+    private void HandleAttackCommand(Vector3 point)
+    {
+        // Assume this is called when the player clicks on an enemy while in attack mode
+        RaycastHit hit;
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(point), out hit))
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                foreach (var selected in selectedUnits)
+                {
+                    selected.GetComponent<UnitController>().SetTarget(hit.transform);
+                }
+            }
         }
     }
 
@@ -70,6 +99,21 @@ public class SelectionManager : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit))
             {
+
+                // attack mode?
+                if (/*isAttackMode && */ hit.collider.CompareTag("Enemy"))
+                {
+                    // Command all selected units to attack this enemy
+                    foreach (var selected in selectedUnits)
+                    {
+                        selected.GetComponent<UnitController>().SetTarget(hit.transform);
+                    }
+                    isAttackMode = false;  // Reset attack mode after command
+                }
+
+
+
+
                 if (hit.collider.CompareTag("Unit"))
                 {
                     GameObject hitUnit = hit.collider.gameObject;
@@ -90,6 +134,7 @@ public class SelectionManager : MonoBehaviour
                 else if (hit.collider.CompareTag("Building"))
                 {
                     SelectBuilding(hit.collider.gameObject);
+                   
                 }
                 else
                 {
@@ -116,6 +161,25 @@ public class SelectionManager : MonoBehaviour
         {
             SelectUnitsInBox();
             isDragging = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            // Toggle attack mode
+            isAttackMode = !isAttackMode;
+            Debug.Log("Attack mode " + (isAttackMode ? "enabled" : "disabled"));
+        }
+    }
+
+    void UpdateCursorForAttackMode()
+    {
+        if (isAttackMode)
+        {
+            Cursor.SetCursor(attackModeCursorTexture, Vector2.zero, CursorMode.Auto);  // Set an attack cursor
+        }
+        else
+        {
+            Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);  // Reset cursor to default
         }
     }
 
@@ -151,6 +215,8 @@ public class SelectionManager : MonoBehaviour
 
     private void SelectBuilding(GameObject building)
     {
+        if (BuildingManager.Instance.isPlacingBuilding) return; // Ignore if placing a building
+
         Building buildingComponent = building.GetComponent<Building>();
         if (buildingComponent != null && buildingComponent.Selectable)
         {
@@ -224,6 +290,8 @@ public class SelectionManager : MonoBehaviour
             // change this
             AudioManager.Instance.PlaySoundEffect(SoundEffect.ClickOnBuilding);
         }
+
+        UnitInfoDisplay.Instance.UpdateSelectedUnitsCount(selectedUnits.Count);
     }
 
     private void DeselectUnit(GameObject unit)
@@ -242,6 +310,7 @@ public class SelectionManager : MonoBehaviour
         {
             UnitInfoDisplay.Instance.ClearInfo();
         }
+        UnitInfoDisplay.Instance.UpdateSelectedUnitsCount(selectedUnits.Count);
     }
 
     private void SelectUnitsInBox()
@@ -255,6 +324,7 @@ public class SelectionManager : MonoBehaviour
             {
                 SelectUnit(unit);
             }
+            UnitInfoDisplay.Instance.UpdateSelectedUnitsCount(selectedUnits.Count);
         }
     }
 
@@ -296,6 +366,7 @@ public class SelectionManager : MonoBehaviour
                         SelectUnit(unit);  // Select newly included units
                     }
                 }
+                UnitInfoDisplay.Instance.UpdateSelectedUnitsCount(selectedUnits.Count);
             }
         }
 
@@ -307,7 +378,7 @@ public class SelectionManager : MonoBehaviour
                 DeselectUnit(previouslySelectedUnit);
             }
         }
-
+        UnitInfoDisplay.Instance.UpdateSelectedUnitsCount(selectedUnits.Count);
         // Update the current selection
         selectedUnits = new List<GameObject>(currentlyHoveredUnits);
     }

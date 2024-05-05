@@ -16,7 +16,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioSource ambientShort; // short sfx ambient -10s
     [SerializeField] private AudioSource ambientLong; // longer ambients 30s+
-
+    [SerializeField] public AudioSource buildLoopSource;
 
     [Header("[UI SFX]")]
     [Header("- Menu")]
@@ -33,6 +33,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioClip rotateBuilding;
     [SerializeField] AudioClip showBuildingUI, closeBuildingUI;
     [SerializeField] AudioClip newCycle;
+    [SerializeField] public AudioClip buildingLoop;
+    [SerializeField] AudioClip buildingComplete;
 
     [Header("- Game Sounds")]
     [SerializeField] private List<AudioClip> shortNightSounds; // Clips less than 10 seconds
@@ -40,13 +42,10 @@ public class AudioManager : MonoBehaviour
     private bool isNightSoundScheduled = false;
     private float nightSoundTimer = 0f;
 
-
-
     [Header("- Music")]
     [SerializeField] private AudioClip[] backgroundMusicTracks; // Array of music tracks
     private int currentTrackIndex = 0;
     private Dictionary<SoundEffect, AudioClip> soundEffects = new Dictionary<SoundEffect, AudioClip>();
-
 
     [Header("- Unit Actions")]
     [SerializeField] private List<AudioClip> unitSelectedClips = new List<AudioClip>();
@@ -166,13 +165,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void PlayNextTrack()
-    {
-        musicSource.clip = backgroundMusicTracks[currentTrackIndex];
-        musicSource.Play();
-        StartCoroutine(WaitForMusicEnd());
-    }
-
     private IEnumerator WaitForMusicEnd()
     {
         while (musicSource.isPlaying)
@@ -189,14 +181,11 @@ public class AudioManager : MonoBehaviour
         PlayNextTrack();
     }
 
-    private void ShuffleSounds(List<AudioClip> sounds, List<int> order)
+    private void PlayNextTrack()
     {
-        order.Clear();
-        for (int i = 0; i < sounds.Count; i++)
-        {
-            order.Add(i);
-        }
-        order.Shuffle();
+        musicSource.clip = backgroundMusicTracks[currentTrackIndex];
+        musicSource.Play();
+        StartCoroutine(WaitForMusicEnd());
     }
 
     public void PlayOneShotSFX(AudioClip audioClip)
@@ -207,6 +196,27 @@ public class AudioManager : MonoBehaviour
             return;
         }
         sfxSource.PlayOneShot(audioClip);
+    }
+
+    public void PlayLoopingSound(AudioClip clip, AudioSource source)
+    {
+        if (source.isPlaying)
+        {
+            source.Stop(); 
+        }
+        source.clip = clip;
+        source.loop = true;
+        source.Play();
+        Debug.Log("Looping sound started.");
+    }
+
+    public void StopLoopingSound(AudioSource source)
+    {
+        if (source.isPlaying)
+        {
+            source.Stop();
+            Debug.Log("Looping sound stopped.");
+        }
     }
 
     public void PlaySoundEffect(SoundEffect effect)
@@ -350,6 +360,8 @@ public class AudioManager : MonoBehaviour
         soundEffects.Add(SoundEffect.ShowUIBuilding, showBuildingUI);
         soundEffects.Add(SoundEffect.CloseUIBuilding, closeBuildingUI);
         soundEffects.Add(SoundEffect.HoverAway, hoverAwaySound);
+        soundEffects.Add(SoundEffect.BuildingLoop, buildingLoop);
+        soundEffects.Add(SoundEffect.BuildingComplete, buildingComplete);
     }
 
     private void PlaySoundFromShuffledList(List<AudioClip> clips, List<int> order, ref int index)
@@ -381,7 +393,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-
     public static IEnumerator FadeAudioSource(AudioSource source, float duration, float targetVolume)
     {
         float currentTime = 0;
@@ -407,7 +418,9 @@ public class AudioManager : MonoBehaviour
         RotateBuilding,
         ShowUIBuilding,
         CloseUIBuilding,
-        HoverAway
+        HoverAway,
+        BuildingLoop,
+        BuildingComplete
     }
 }
 

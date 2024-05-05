@@ -15,10 +15,6 @@ public class CameraController : MonoBehaviour
     [Range(0f,1f)]
     [SerializeField] private float zoomLevel = 1;
 
-
-
-
-
     [SerializeField] private CinemachineVirtualCamera vcam;
 
     [Header("General")]

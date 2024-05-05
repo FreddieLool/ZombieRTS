@@ -29,7 +29,6 @@ public class BuildingUI : MonoBehaviour
         UpdatePosition();
     }
 
-
     private void UpdatePosition()
     {
         if (building != null && Camera.main != null)

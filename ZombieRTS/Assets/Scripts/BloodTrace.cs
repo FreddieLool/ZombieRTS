@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
 // leaves blood traces, not used anymore..
+// also deforms terrain (wanted to use for walking in snow, but its not ideal)
+
 public class BloodTrace : MonoBehaviour
 {
     public Terrain terrain;

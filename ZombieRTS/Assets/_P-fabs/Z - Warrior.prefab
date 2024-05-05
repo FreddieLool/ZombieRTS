@@ -816,7 +816,7 @@ Transform:
   m_GameObject: {fileID: 5542942130105899888}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.166, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1071,6 +1071,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 7682847525091545587}
+  unit: {fileID: 0}
+  target: {fileID: 0}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1176,7 +1178,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 7546479615879776948}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.44
+  m_Radius: 0.85
   m_Speed: 7
   m_Acceleration: 8
   avoidancePriority: 1
@@ -1185,8 +1187,8 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1.5
-  m_BaseOffset: 0.44
+  m_Height: 2
+  m_BaseOffset: 0.57
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &1116907611883947777
@@ -1206,6 +1208,8 @@ MonoBehaviour:
   maxHealth: 0
   attackDamage: 7
   movementSpeed: 120
+  attackRange: 2
+  attackRate: 1
 --- !u!114 &795256955722305712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1525,6 +1529,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Friendly Minimap Marker
+      objectReference: {fileID: 0}
+    - target: {fileID: 6111044083923933078, guid: 1439da7ab1c0da244bfbd6a8848e39ce,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 9083263317465313981, guid: 1439da7ab1c0da244bfbd6a8848e39ce,
         type: 3}

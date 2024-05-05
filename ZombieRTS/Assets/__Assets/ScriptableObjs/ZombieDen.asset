@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingName: Zombie Den
   prefab: {fileID: 2154823555089990480, guid: 10c12a88f311db94a8924a561dc6309d, type: 3}
-  icon: {fileID: 21300000, guid: f5483affee0b4884b91f1f792688846f, type: 3}
-  cost: 950
-  buildTime: 35
+  icon: {fileID: 21300000, guid: 4ff017e94d1bade469097b4e0f8937ed, type: 3}
+  constructionCosts:
+  - resourceName: Bone
+    amount: 350
+  - resourceName: Biohazard
+    amount: 150
+  buildTime: 15
   cooldown: 50
   description: The central hub for your colony, the Zombie Den spawns Worker Zombies
     and enables basic building access, essential for colony development and expansion.
@@ -27,3 +31,13 @@ MonoBehaviour:
   upgradeCost: 500
   upgradeTime: 10
   placementSound: {fileID: 8300000, guid: fcadb745f44c72047bd28b433b1e6bf3, type: 3}
+  resourceProductions:
+  - resourceName: Bone
+    amountPerCycle: 5
+    cycleTime: 2
+  - resourceName: Flesh
+    amountPerCycle: 2
+    cycleTime: 4
+  - resourceName: 
+    amountPerCycle: 0
+    cycleTime: 0

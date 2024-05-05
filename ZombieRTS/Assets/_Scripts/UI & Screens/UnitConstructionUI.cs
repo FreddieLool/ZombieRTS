@@ -32,7 +32,6 @@ public class UnitConstructionUI : MonoBehaviour
             CompleteConstruction();
     }
 
-
     private void UpdateUI(float progress)
     {
         constructionSlider.value = progress;

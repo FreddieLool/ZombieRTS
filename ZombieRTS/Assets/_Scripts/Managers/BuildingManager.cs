@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -21,10 +22,11 @@ public class BuildingManager : MonoBehaviour
     public LayerMask buildingLayer;
     public Transform buildingParent; // Parent object to keep hierarchy organized
     public GameObject player;
-    private Dictionary<MeshRenderer, Material[]> originalMaterials;
+    private Dictionary<Renderer, Material[]> originalMaterials;
     public float gridSnapSize = 2.0f;  // Grid size for snapping buildings
     public float spacing = 1.0f;  // Spacing between buildings
     public List<BuildingData> activeBuildings = new List<BuildingData>();
+    public bool isPlacingBuilding = false; // flag for preventing clicks when placing building
 
     [Header("Visual Feedback")]
     public Material placementMaterial; // Material based on shader that has the isValid toggle
@@ -83,7 +85,6 @@ public class BuildingManager : MonoBehaviour
         return false;
     }
 
-
     // HandleBuildingPlacement method related
     Vector3 originalScale;
     bool isScalingDown = false;
@@ -101,32 +102,35 @@ public class BuildingManager : MonoBehaviour
                 Vector3 snapPosition = SnapPositionToGrid(hit.point);
                 toBuildInstance = Instantiate(previewBuilding.prefab, snapPosition, Quaternion.identity, buildingParent);
                 SetupBuildingMaterials(toBuildInstance);
-                originalScale = toBuildInstance.transform.localScale;  // Save the original scale
-                ShowGrid(hit.point);
+                originalScale = toBuildInstance.transform.localScale;
+                isPlacingBuilding = true; // Start placing
             }
 
             toBuildInstance.transform.position = SnapPositionToGrid(hit.point);
-
-            // Ground alignment rotation
-            Quaternion groundRotation = Quaternion.FromToRotation(Vector3.up, hit.normal);
-            baseRotation = groundRotation;
-
-            // Apply combined rotation with manual offset
-            toBuildInstance.transform.rotation = groundRotation * Quaternion.Euler(0, rotationYOffset, 0);
+            toBuildInstance.transform.rotation = Quaternion.FromToRotation(Vector3.up, hit.normal) * Quaternion.Euler(0, rotationYOffset, 0);
 
             placementValid = CheckPlacement(toBuildInstance.transform.position);
             UpdateMaterialValidity(placementValid);
 
-            AdjustScaleBasedOnTerrain(hit.normal);
-
             if (Input.GetMouseButtonDown(0) && placementValid)
             {
-                FinishPlacement();
+                if (ResourceManager.Instance.HasEnoughResources(previewBuilding.constructionCosts))
+                {
+                    ResourceManager.Instance.DeductResources(previewBuilding.constructionCosts);
+                    FinishPlacement();
+                    isPlacingBuilding = false; // Placement finished
+                }
+                else
+                {
+                    Debug.Log("Not enough resources.");
+                    CancelBuildingPlacement();
+                }
             }
             else if (Input.GetMouseButtonDown(0))
             {
                 TriggerInvalidPlacementAnimation(toBuildInstance.transform);
                 AudioManager.Instance.PlaySoundEffect(SoundEffect.ErrorClick);
+                CancelBuildingPlacement();
             }
         }
     }
@@ -174,25 +178,6 @@ public class BuildingManager : MonoBehaviour
         }
     }
 
-    private void AdjustScaleBasedOnTerrain(Vector3 normal)
-    {
-        float angle = Vector3.Angle(Vector3.up, normal);
-        if (angle > 2 && angle <= 25) // Threshold angle for scaling
-        {
-            if (!isScalingDown)
-            {
-                isScalingDown = true;
-                Vector3 targetScale = originalScale * 0.90f;
-                LeanTween.scale(toBuildInstance, targetScale, 0.3f);
-            }
-        }
-        else if (isScalingDown)
-        {
-            isScalingDown = false;
-            LeanTween.scale(toBuildInstance, originalScale, 0.3f);
-        }
-    }
-
     public void RegisterBuilding(BuildingData building)
     {
         activeBuildings.Add(building);
@@ -217,16 +202,23 @@ public class BuildingManager : MonoBehaviour
             if (AudioManager.Instance != null)
                 AudioManager.Instance.PlayErrorSound();
             //Debug.Log("Building placement cancelled.");
+            isPlacingBuilding = false; // Placement finished
         }
     }
 
-    private void RestoreOriginalMaterials()
+    private void RestoreOriginalMaterials(GameObject building)
     {
-        foreach (var renderer in originalMaterials)
+        Renderer[] renderers = building.GetComponentsInChildren<Renderer>();
+
+        foreach (Renderer renderer in renderers)
         {
-            renderer.Key.materials = renderer.Value;  // Restore original materials
+            if (originalMaterials.ContainsKey(renderer))
+            {
+                renderer.materials = originalMaterials[renderer];  // Restore original materials
+            }
         }
     }
+
 
     // 1 Material works on shader now, with logic inside it to trigger 2 colors (S_Placement)
     private void UpdateMaterialValidity(bool isValid)
@@ -245,32 +237,74 @@ public class BuildingManager : MonoBehaviour
     {
         if (placementValid && toBuildInstance != null)
         {
-            // Placement is valid, so we finalize the building's setup here
-            if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayOneShotSFX(previewBuilding.placementSound);
+            toBuildInstance.transform.SetParent(buildingParent);
+            RestoreOriginalMaterials(toBuildInstance);
+            StartBuildingConstruction(toBuildInstance, previewBuilding.buildTime);
+            //HideGrid();
+            //toBuildInstance.GetComponent<Building>().DisableInteraction(); // Disable interaction during construction
+            RegisterBuilding(previewBuilding);
+
+            Building buildingScript = toBuildInstance.GetComponent<Building>();
+            if (buildingScript != null)
             {
-                AudioManager.Instance.PlayOneShotSFX(previewBuilding.placementSound);
+                Debug.Log("Starting Particles");
+                buildingScript.ActivateParticles();  // Start particles only after actual placement
             }
 
-            toBuildInstance.transform.SetParent(buildingParent);
-            RestoreOriginalMaterials();
-
-            // Start the popping animation
-            StartPopAnimation(toBuildInstance.transform);
-
-            HideGrid();
-            // to register BUILDING
-
-            // Enable interaction with the building now that it's validly placed
-            toBuildInstance.GetComponent<Building>().EnableInteraction();
             toBuildInstance = null;
             previewBuilding = null;
         }
         else
         {
-            // Placement is invalid, do not allow selection or UI interaction
             Debug.Log("Attempted to place an invalid building.");
             CancelBuildingPlacement();
         }
+    }
+
+    private void StartBuildingConstruction(GameObject building, float buildTime)
+    {
+        LeanTween.scale(building, Vector3.one * 1.159f, 0.25f).setEase(LeanTweenType.easeOutBack)
+            .setOnComplete(() => {
+                LeanTween.scale(building, Vector3.zero, 0.25f).setEase(LeanTweenType.easeInBack)
+                    .setOnComplete(() => {
+                        // Begin the bounce scaling construction process
+                        BounceScale(building, originalScale, buildTime / 5, 5);
+                    });
+            });
+    }
+
+    private void BounceScale(GameObject building, Vector3 targetScale, float duration, int bouncesRemaining)
+    {
+        if (bouncesRemaining <= 0)
+        {
+            building.transform.localScale = targetScale; // Set the final scale
+            BuildingConstructionComplete(building); // Finalize construction
+            return;
+        }
+
+        // Calculate the current bounce's target scale based on the number of bounces left
+        float scaleStep = (1.0f / bouncesRemaining) * (targetScale.magnitude - building.transform.localScale.magnitude);
+        Vector3 currentTargetScale = building.transform.localScale + new Vector3(scaleStep, scaleStep, scaleStep);
+
+        // Calculate overshoot scale:
+        Vector3 overshootScale = currentTargetScale * 1.05f; // Overshoot a little
+        overshootScale = Vector3.Min(overshootScale, targetScale);
+
+        // Animate to the overshoot scale and then to an undershoot scale
+        LeanTween.scale(building, overshootScale, duration * 0.5f).setEase(LeanTweenType.easeOutQuad).setOnComplete(() => {
+            Vector3 undershootScale = currentTargetScale * 0.95f; // Undershoot a little
+            LeanTween.scale(building, undershootScale, duration * 0.5f).setEase(LeanTweenType.easeInQuad).setOnComplete(() => {
+                BounceScale(building, targetScale, duration, bouncesRemaining - 1); // Continue bouncing
+            });
+        });
+    }
+
+    private void BuildingConstructionComplete(GameObject building)
+    {
+        building.GetComponent<Building>().FinishConstruction();
+        StartPopAnimation(building.transform);
+        AudioManager.Instance.PlaySoundEffect(SoundEffect.BuildingComplete);
     }
 
     public bool IsBuildingPresent(string buildingName)
@@ -280,38 +314,24 @@ public class BuildingManager : MonoBehaviour
 
     private void StartPopAnimation(Transform buildingTransform)
     {
-        // Set the initial scale to zero for the popping effect
-        buildingTransform.localScale = Vector3.zero;
-
-        // Animate scale up to slightly over 100% then back to 100% to create a bounce effect
-        LeanTween.scale(buildingTransform.gameObject, Vector3.one * 1.1f, 0.25f).setEase(LeanTweenType.easeOutBack)
-            .setOnComplete(() => {
-                // After popping out, scale back to the original size with a small bounce
-                LeanTween.scale(buildingTransform.gameObject, Vector3.one, 0.15f).setEase(LeanTweenType.easeInOutQuad);
-            });
+        LeanTween.scale(buildingTransform.gameObject, Vector3.one * 1.234f, 0.25f).setEase(LeanTweenType.easeOutBack)
+            .setOnComplete(() => LeanTween.scale(buildingTransform.gameObject, Vector3.one, 0.15f).setEase(LeanTweenType.easeInOutQuad));
     }
 
     private void SetupBuildingMaterials(GameObject building)
     {
-        meshRenderers = building.GetComponentsInChildren<MeshRenderer>();
-        originalMaterials = new Dictionary<MeshRenderer, Material[]>();
-        foreach (MeshRenderer renderer in meshRenderers)
+        Renderer[] renderers = building.GetComponentsInChildren<Renderer>();
+        originalMaterials = new Dictionary<Renderer, Material[]>();
+
+        foreach (Renderer renderer in renderers)
         {
             originalMaterials[renderer] = renderer.materials;  // Store original materials
-
-            // Create an array of the same placement material for each submesh
             Material[] newMaterials = new Material[renderer.materials.Length];
             for (int i = 0; i < newMaterials.Length; i++)
             {
                 newMaterials[i] = placementMaterial;
             }
-            renderer.materials = newMaterials;  // Apply placement material to all submeshes
-
-            // Optionally disable collider here as well
-            if (renderer.gameObject.GetComponent<Collider>() != null)
-            {
-                renderer.gameObject.GetComponent<Collider>().enabled = false;
-            }
+            renderer.materials = newMaterials;  // Apply placement material
         }
     }
 
@@ -373,13 +393,15 @@ public class BuildingManager : MonoBehaviour
         buildingCollider.enabled = false;
 
         // chk for any building
-        Collider[] colliders = Physics.OverlapBox(position, colliderSize, colliderRotation, buildingLayer);
+        Collider[] colliders = Physics.OverlapBox(position, new Vector3(3, 3, 3), Quaternion.identity, buildingLayer);
         if (colliders.Length > 0)
         {
             buildingCollider.enabled = true; // Re-enable the collider
             Debug.Log($"Placement failed: Building intersects with {colliders.Length} other buildings.");
             return false;
         }
+
+
 
         Vector3 _extents = new Vector3(3, 3, 3);
         int paintMask = LayerMask.GetMask("PaintableObjects"); // PrintableObjects is the layer for all painted objects (trees, rocks, ...)

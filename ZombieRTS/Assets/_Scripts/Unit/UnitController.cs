@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -26,6 +26,8 @@ public class UnitController : MonoBehaviour
 {
     Camera mainCamera;
     [SerializeField] NavMeshAgent agent;
+    [SerializeField] Unit unit;
+    public Transform target;
     public LayerMask groundLayer;
     public bool isCommandedToMove;
     public UnityEvent<bool> onMovementStateChanged;
@@ -76,7 +78,6 @@ public class UnitController : MonoBehaviour
             ProcessInput();
             if (agent != null && agent.hasPath)
             {
-                // Check the distance to the ground marker and animate if close enough
                 MarkerManager.Instance.CheckAndAnimateMarker(transform.position);
             }
 
@@ -89,7 +90,30 @@ public class UnitController : MonoBehaviour
                 CommandUnitsToMove(centerPosition, FormationType.Rectangle, selectedUnits);
             }
         }
+
+        if (target)
+        {
+            float distance = Vector3.Distance(transform.position, target.position);
+            if (distance <= agent.stoppingDistance)
+            {
+                Unit enemyUnit = target.GetComponent<Unit>();
+                if (enemyUnit != null && unit.CanAttack())
+                {
+                    unit.Attack(enemyUnit);
+                }
+            }
+            else
+            {
+                agent.SetDestination(target.position);
+            }
+        }
+
         UpdateMovementState();
+    }
+
+    public void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
     }
 
     public void ApplyUnitData()
@@ -198,7 +222,7 @@ public class UnitController : MonoBehaviour
             bool isCrowded = hitColliders.Length > 1; // More than 1 because the unit will detect itself
 
             // Adjust stopping distance based on crowd density
-            agent.stoppingDistance = isCrowded ? 5.0f : 0.1f;
+            agent.stoppingDistance = isCrowded ? 7.0f : 0.3f;
 
             if (agent.remainingDistance > agent.stoppingDistance && agent.velocity.sqrMagnitude > 0f)
             {

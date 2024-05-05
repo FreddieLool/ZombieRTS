@@ -19,7 +19,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-
         PlayerData playerData = SaveSystem.LoadPlayerData();
         GameSettings settings = SaveSystem.LoadSettings();
 

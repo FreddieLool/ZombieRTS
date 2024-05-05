@@ -16,9 +16,7 @@ public class AnimationController : MonoBehaviour
 
     public void ChangeSpeed(bool isWalking)
     {
-        Debug.Log("Walking state changed to: " + isWalking);
+        //Debug.Log("Walking state changed to: " + isWalking);
         animator.SetBool("isWalking", isWalking);
     }
-
-
 }

@@ -26,7 +26,6 @@ public class UnitManager : MonoBehaviour
         InitializeUnitPools();
     }
 
-
     private void InitializeUnitPools()
     {
         foreach (var data in unitTypes)
@@ -57,8 +56,10 @@ public class UnitManager : MonoBehaviour
         if (unitDataDictionary.TryGetValue(unitName, out UnitData unitData))
         {
             GameObject unit = Instantiate(unitData.unitPrefab, position, Quaternion.identity, unitParent);
+            AudioManager.Instance.PlaySoundEffect(AudioManager.SoundEffect.HoverAway);
             unit.SetActive(true);
-            ResourceManager.Instance.DeductResources(unitData.costs);
+            // Now we deduct the cost once we click the button.
+            //ResourceManager.Instance.DeductResources(unitData.costs);
 
             UnitController unitController = unit.GetComponent<UnitController>();
             if (unitController != null)
@@ -81,7 +82,6 @@ public class UnitManager : MonoBehaviour
         }
     }
 
-
     public bool CanSpawn(string unitName)
     {
         if (unitDataDictionary.TryGetValue(unitName, out UnitData unitData))
@@ -90,9 +90,4 @@ public class UnitManager : MonoBehaviour
         }
         return false;
     }
-
-
-
-    // enemy units
-
 }

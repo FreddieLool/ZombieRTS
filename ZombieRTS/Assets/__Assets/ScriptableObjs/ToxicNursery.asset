@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingName: Toxic Nursery
   prefab: {fileID: 2154823555089990480, guid: 55409e0add0718641a85d7e1f86d76ed, type: 3}
-  icon: {fileID: 21300000, guid: f5483affee0b4884b91f1f792688846f, type: 3}
-  cost: 499
-  buildTime: 99
+  icon: {fileID: 21300000, guid: f9496aee4116de44fbbeb1be4c78d3c2, type: 3}
+  constructionCosts:
+  - resourceName: Bone
+    amount: 280
+  - resourceName: Biohazard
+    amount: 120
+  buildTime: 10
   cooldown: 150
   description: "This facility produces biohazard materials and spearheads research
     for upgrades, crucial for advancing your colony\u2019s offensive and defensive
@@ -28,3 +32,7 @@ MonoBehaviour:
   upgradeCost: 757
   upgradeTime: 90
   placementSound: {fileID: 8300000, guid: 9e5fe7f603dac6f47a0eead326f95bef, type: 3}
+  resourceProductions:
+  - resourceName: Biohazard
+    amountPerCycle: 7
+    cycleTime: 9

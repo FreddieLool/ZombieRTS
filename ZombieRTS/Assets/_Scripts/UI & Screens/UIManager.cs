@@ -4,7 +4,12 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
 using static AudioManager;
+using System.Linq;
 
+
+/// <summary>
+/// TO DO:: Decouple any building/unit logic from UI. Spawning units and closing the unit panel postpones their spawn until its opened back again.
+/// </summary>
 
 public class UIManager : MonoBehaviour
 {
@@ -13,11 +18,12 @@ public class UIManager : MonoBehaviour
     // Building UI
     [SerializeField] GameObject buildingUI;
     [SerializeField] private RectTransform buildingUIRectTransform; 
-    private bool isBuildingUIVisible = false; 
+    private bool isBuildingUIVisible = false;
+    public RectTransform contentPanel; // Assign this in the inspector
+    public GridLayoutGroup gridLayoutGroup;
+    public ScrollRect scrollRect;
 
     // ----------------
-    
-
 
     [SerializeField] private BuildingData[] buildings; // all buildings
     // DECOUPLE buulding data
@@ -51,7 +57,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private RectTransform unitPanelRectTransform;
     private bool isUnitPanelVisible = false;
 
-
+    // Unit construction representation prefab stuff
+    public RectTransform unitButtonContentPanel; // Assign in the Unity Inspector
+    public HorizontalLayoutGroup horizontalLayoutGroup;
 
 
     void Awake()
@@ -77,8 +85,8 @@ public class UIManager : MonoBehaviour
         buildingUI.SetActive(false); 
         unitPanelUI.SetActive(false);
         UpdateResourceUI();
+        ClearExistingUnitUI(); // clean any
     }
-
 
     void Update()
     {
@@ -108,10 +116,20 @@ public class UIManager : MonoBehaviour
     {
         if (ResourceManager.Instance != null)
         {
-            boneResourcesTxt.text = ResourceManager.Instance.GetResourceAmount("Bone").ToString();
-            biohazardResourcesTxt.text = ResourceManager.Instance.GetResourceAmount("Biohazard").ToString();
-            fleshResourcesTxt.text = ResourceManager.Instance.GetResourceAmount("Flesh").ToString();
+            TweenResourceValue(boneResourcesTxt, ResourceManager.Instance.GetResourceAmount("Bone"));
+            TweenResourceValue(biohazardResourcesTxt, ResourceManager.Instance.GetResourceAmount("Biohazard"));
+            TweenResourceValue(fleshResourcesTxt, ResourceManager.Instance.GetResourceAmount("Flesh"));
         }
+    }
+
+    private void TweenResourceValue(TextMeshProUGUI resourceText, int targetValue)
+    {
+        int currentValue = int.TryParse(resourceText.text, out currentValue) ? currentValue : 0;
+        LeanTween.value(gameObject, currentValue, targetValue, 1.5f)
+            .setOnUpdate((float value) => {
+                resourceText.text = Mathf.FloorToInt(value).ToString();
+            })
+            .setEase(LeanTweenType.easeInOutQuad);
     }
 
     // Unit Panel
@@ -161,13 +179,38 @@ public class UIManager : MonoBehaviour
 
     private void PopulateUnitButtons()
     {
+        ClearExistingUnitButtons(); // Remove existing buttons
+
+        float totalWidth = 0;
+        GameObject tempButton = Instantiate(unitButtonPrefab, unitButtonParent);
+        RectTransform btnRect = tempButton.GetComponent<RectTransform>();
+        float buttonWidth = btnRect.rect.width;
+        Destroy(tempButton);
+
+        // Calculate total width based on the button widths and the defined spacing and padding in the Horizontal Layout Group
+        totalWidth = units.Count() * buttonWidth;
+        if (units.Count() > 1)
+        {
+            totalWidth += (units.Count() - 1) * unitButtonParent.GetComponent<HorizontalLayoutGroup>().spacing;
+        }
+        totalWidth += unitButtonParent.GetComponent<HorizontalLayoutGroup>().padding.left + unitButtonParent.GetComponent<HorizontalLayoutGroup>().padding.right;
+
+        // Set the width of the content panel
+        unitButtonContentPanel.sizeDelta = new Vector2(totalWidth, unitButtonContentPanel.sizeDelta.y);
+
         foreach (var unit in units)
         {
             GameObject btnObj = Instantiate(unitButtonPrefab, unitButtonParent);
             UnitButton unitButton = btnObj.GetComponent<UnitButton>();
             unitButton.Setup(unit);
-            UnitData currentUnit = unit;
-            unitButton.button.onClick.AddListener(() => OnUnitButtonClicked(currentUnit));
+        }
+    }
+
+    private void ClearExistingUnitButtons()
+    {
+        foreach (Transform child in unitButtonParent)
+        {
+            Destroy(child.gameObject);
         }
     }
 
@@ -175,12 +218,13 @@ public class UIManager : MonoBehaviour
     {
         if (ResourceManager.Instance.HasEnoughResources(unitData.costs))
         {
-            ResourceManager.Instance.DeductResources(unitData.costs);
+            ResourceManager.Instance.DeductResources(unitData.costs); // Ensure this happens only here
             StartUnitConstruction(unitData);
         }
         else
         {
             Debug.Log("Not enough resources!");
+            AudioManager.Instance.PlaySoundEffect(SoundEffect.ErrorClick);
         }
     }
 
@@ -188,6 +232,14 @@ public class UIManager : MonoBehaviour
     {
         GameObject uiObj = Instantiate(unitConstructionPrefab, unitConstructionParent);
         uiObj.GetComponent<UnitConstructionUI>().Initialize(unitData.icon, unitData.buildTime, unitData);
+    }
+
+    private void ClearExistingUnitUI()
+    {
+        foreach (Transform child in unitConstructionParent)
+        {
+            Destroy(child.gameObject);
+        }
     }
 
     private void UpdateCycleCounter()
@@ -211,13 +263,37 @@ public class UIManager : MonoBehaviour
 
     private void PopulateBuildingButtons()
     {
+        ClearExistingButtons(); // destroy existing buttons
+
+        int numberOfBuildings = buildings.Count();
+        int numberOfColumns = gridLayoutGroup.constraintCount;
+        float rowHeight = gridLayoutGroup.cellSize.y + gridLayoutGroup.spacing.y;
+        int numberOfRows = Mathf.CeilToInt((float)numberOfBuildings / numberOfColumns);
+
+        // Calculate the required height of the content
+        float requiredHeight = numberOfRows * rowHeight + gridLayoutGroup.padding.top + gridLayoutGroup.padding.bottom - gridLayoutGroup.spacing.y;
+
+        // Set the size of the content panel
+        contentPanel.sizeDelta = new Vector2(contentPanel.sizeDelta.x, requiredHeight);
+
         foreach (var building in buildings)
         {
-            GameObject btnObj = Instantiate(buttonPrefab, buttonParent);
+            GameObject btnObj = Instantiate(buttonPrefab, contentPanel.transform, false);
             BuildingButton buildingButton = btnObj.GetComponent<BuildingButton>();
             buildingButton.Setup(building);
             BuildingData currentBuilding = building; // temp var to correctly capture the current loop iteration
             buildingButton.button.onClick.AddListener(() => SelectBuildingButton(currentBuilding));
+        }
+
+        // Reset the scroll position to the top after populating
+        scrollRect.verticalNormalizedPosition = 1.0f;
+    }
+
+    private void ClearExistingButtons()
+    {
+        foreach (Transform child in contentPanel.transform)
+        {
+            Destroy(child.gameObject);
         }
     }
 
@@ -271,7 +347,7 @@ public class UIManager : MonoBehaviour
         isBuildingUIVisible = true;
         // Start from the right off-screen
         Vector3 startPosition = new Vector3(Screen.width, buildingUIRectTransform.anchoredPosition.y, 0);
-        Vector3 endPosition = new Vector3(0, buildingUIRectTransform.anchoredPosition.y, 0);  // Assuming the UI fits at x=0 when fully visible
+        Vector3 endPosition = new Vector3(0, buildingUIRectTransform.anchoredPosition.y, 0);  // it fits at x=0 when fully visible
 
         buildingUIRectTransform.anchoredPosition = startPosition;
         LeanTween.move(buildingUIRectTransform, endPosition, 0.35f).setEase(LeanTweenType.easeOutExpo);
@@ -289,11 +365,4 @@ public class UIManager : MonoBehaviour
         });
     }
 
-
-    // UNIT UI
-
-    public void OnUnitButtonClicked(string unitName)
-    {
-        MainBaseManager.Instance.SpawnUnit(unitName);
-    }
 }
