@@ -53,11 +53,9 @@ public class Unit : MonoBehaviour
 
     public void Attack(Unit target)
     {
-        if (target && CanAttack())
-        {
+        
             target.ReceiveDamage(attackDamage);
             lastAttackTime = Time.time;
-        }
     }
 
 }

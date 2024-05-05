@@ -91,22 +91,22 @@ public class UnitController : MonoBehaviour
             }
         }
 
-        if (target)
+        FindClosestTarget();
+        
+        if(targetUnit != null)
         {
-            float distance = Vector3.Distance(transform.position, target.position);
-            if (distance <= agent.stoppingDistance)
+            Debug.Log("Attacking Target");
+            if (Vector3.Distance(transform.position, targetUnit.transform.position) <= unit.attackRange)
             {
-                Unit enemyUnit = target.GetComponent<Unit>();
-                if (enemyUnit != null && unit.CanAttack())
+                if (unit.CanAttack())
                 {
-                    unit.Attack(enemyUnit);
+                    unit.Attack(targetUnit);
                 }
             }
-            else
-            {
-                agent.SetDestination(target.position);
-            }
         }
+           
+        
+
 
         UpdateMovementState();
     }
@@ -114,6 +114,27 @@ public class UnitController : MonoBehaviour
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
+    }
+
+    void FindClosestTarget()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, enemyLayer);
+        float closestDistance = float.MaxValue;
+        if(hits.Length <= 0)
+        {
+            targetUnit = null;
+            return;
+        }
+
+        foreach (var hit in hits)
+        {
+            float distance = Vector3.Distance(transform.position, hit.transform.position);
+            if (distance < closestDistance)
+            {
+                closestDistance = distance;
+                targetUnit = hit.transform.GetComponent<Unit>();
+            }
+        }
     }
 
     public void ApplyUnitData()
@@ -285,5 +306,7 @@ public class UnitController : MonoBehaviour
 
     private float originalScale = 0.075f; 
     private bool isScalingDown = false; // Flag to control the scaling state
-
+    private float detectionRadius = 10;
+    [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private Unit targetUnit;
 }
