@@ -28,6 +28,7 @@ public class Enemy : MonoBehaviour
     public float attackRate = 1f;
     private float attackCooldown;
 
+    private Unit targetUnit;
 
     private void Start()
     {
@@ -45,11 +46,11 @@ public class Enemy : MonoBehaviour
         else
         {
             agent.SetDestination(target.position);
-            if (Vector3.Distance(transform.position, target.position) <= agent.stoppingDistance)
+            if (Vector3.Distance(transform.position, target.position) <= unit.attackRange)
             {
                 if (attackCooldown <= 0f)
                 {
-                    AttackPlayer();
+                    AttackTarget();
                     attackCooldown = 1f / attackRate;
                 }
             }
@@ -73,6 +74,7 @@ public class Enemy : MonoBehaviour
             {
                 closestDistance = distance;
                 target = hit.transform;
+                targetUnit = target.GetComponent<Unit>();
             }
         }
     }
@@ -84,9 +86,10 @@ public class Enemy : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 
-    private void AttackPlayer()
+    private void AttackTarget()
     {
         Debug.Log("Attacking the player with " + unit.attackDamage + " damage.");
+        targetUnit.ReceiveDamage(unit.attackDamage);
         // attack logic HERE
     }
 
