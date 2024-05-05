@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1237776911488313350}
   - component: {fileID: 7288573348992065721}
   m_Layer: 5
-  m_Name: TimeTxt
+  m_Name: UpgradeTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -481,7 +481,7 @@ GameObject:
   - component: {fileID: 8798773861896347458}
   - component: {fileID: 7936286568991963698}
   m_Layer: 5
-  m_Name: TimeTxt
+  m_Name: CapacityTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1037,7 +1037,7 @@ GameObject:
   - component: {fileID: 7738351465130493681}
   - component: {fileID: 697348999579290954}
   m_Layer: 5
-  m_Name: TimeTxt
+  m_Name: HealthTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1918,7 +1918,7 @@ GameObject:
   - component: {fileID: 9181712649764253742}
   m_Layer: 5
   m_Name: 'Building Info Panel '
-  m_TagString: Untagged
+  m_TagString: BuildingUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1999,9 +1999,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 2876968192674746694}
   healthText: {fileID: 697348999579290954}
-  armorText: {fileID: 7936286568991963698}
   descriptionText: {fileID: 6559652836269974296}
   upgradeCostText: {fileID: 7288573348992065721}
+  upgradeButton: {fileID: 1290356782078641410}
+  removeButton: {fileID: 319263504010919489}
 --- !u!114 &9181712649764253742
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -83,9 +83,6 @@ public class PrefabPainterEditor : Editor
     }
 
 
-
-
-
     private void DeletePrefabs(Event e, PrefabPainter painter)
     {
         Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);

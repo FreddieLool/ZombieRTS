@@ -21,7 +21,7 @@ public class MainBaseManager : MonoBehaviour
         }
     }
 
-    public void SpawnUnit(string unitType)
+/*    public void SpawnUnit(string unitType)
     {
         if (UnitManager.Instance.CanSpawn(unitType))
         {
@@ -30,7 +30,7 @@ public class MainBaseManager : MonoBehaviour
             unitSpawnCount++;  // Increment after spawning a unit
         }
     }
-
+*/
     public Vector3 GetSpawnPosition()
     {
         // Calculate offset based on the number of units already spawned

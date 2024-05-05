@@ -37,14 +37,14 @@ public class BuildingManager : MonoBehaviour
     private MeshRenderer[] meshRenderers;
 
 
-    // grid
+    // grid (DEPRECATED) (NOT IN USE ATM)
     public GameObject lineRendererPrefab;  // Assign in inspector
     public int gridExtent = 10;  // Determines how far the grid extends
     private List<GameObject> gridLines = new List<GameObject>();
     private List<GameObject> gridCells = new List<GameObject>();
 
 
-
+    
     void Awake()
     {
         mainCamera = Camera.main;

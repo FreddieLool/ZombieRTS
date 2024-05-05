@@ -68,7 +68,6 @@ public class SelectionManager : MonoBehaviour
 
     private void StartAttackMode()
     {
-        // Assume you enter a mode where the next click on an enemy unit commands selected units to attack
         Debug.Log("Attack mode active. Click on an enemy to attack.");
     }
 
@@ -131,15 +130,24 @@ public class SelectionManager : MonoBehaviour
                         SelectUnit(hitUnit);
                     }
                 }
-                else if (hit.collider.CompareTag("Building"))
+
+
+
+
+                if (hit.collider.CompareTag("Building"))
                 {
                     SelectBuilding(hit.collider.gameObject);
-                   
                 }
-                else
+                else if (!UIManager.Instance.IsPointerOverUIObject())  // THE FUCKING WORKAROUND TO DETECT CLICK ON UI AND NOT DESELECT THE BUILDING!!!!!!!
                 {
-                    if (!isCtrlHeld) DeselectAll();
+                    DeselectAll();
                 }
+
+
+            }
+            else if (!UIManager.Instance.IsPointerOverUIObject())
+            {
+                DeselectAll();
             }
             else
             {
@@ -163,7 +171,7 @@ public class SelectionManager : MonoBehaviour
             isDragging = false;
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             // Toggle attack mode
             isAttackMode = !isAttackMode;
@@ -225,8 +233,8 @@ public class SelectionManager : MonoBehaviour
                 DeselectAll();  // Deselect any previously selected objects
                 selectedBuilding = building;
                 buildingComponent.DisplayInfo();
-                StartSelectionPopAnimation(building.transform);  // Trigger the pop animation
-                AudioManager.Instance.PlaySoundEffect(SoundEffect.ClickOnBuilding); // Play sound only if a new building is selected
+                StartSelectionPopAnimation(building.transform); 
+                AudioManager.Instance.PlaySoundEffect(SoundEffect.ClickOnBuilding); 
             }
             // Do nothing if the building is already selected, thus not playing the sound again
         }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buildingName: Zombie Den
   prefab: {fileID: 2154823555089990480, guid: 10c12a88f311db94a8924a561dc6309d, type: 3}
-  icon: {fileID: 21300000, guid: 4ff017e94d1bade469097b4e0f8937ed, type: 3}
+  icon: {fileID: 21300000, guid: a13edd6d2bdadea49938a7a9c173c434, type: 3}
   constructionCosts:
   - resourceName: Bone
     amount: 350

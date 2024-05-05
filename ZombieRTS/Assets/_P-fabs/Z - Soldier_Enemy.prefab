@@ -191,6 +191,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: 7682847525091545587}
+  unit: {fileID: 0}
+  target: {fileID: 0}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -240,7 +242,13 @@ Animator:
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
+    'mixamorig:LeftHandIndex1'\n\tTransform 'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform
+    'mixamorig:RightArm'\n\tTransform 'mixamorig:LeftLeg'\n\tTransform 'mixamorig:LeftShoulder'\n\tTransform
+    'mixamorig:RightFoot'\n\tTransform 'mixamorig:Head'\n\tand more ...\n\tFrom animation
+    clip 'Death From The Front'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -296,7 +304,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 7546479615879776948}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.44
+  m_Radius: 0.7
   m_Speed: 3
   m_Acceleration: 8
   avoidancePriority: 50
@@ -326,6 +334,8 @@ MonoBehaviour:
   maxHealth: 0
   attackDamage: 3
   movementSpeed: 3
+  attackRange: 2
+  attackRate: 1
 --- !u!114 &795256955722305712
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static AudioManager;
 
-public class BuildingButton : MonoBehaviour
+public class BuildingButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public TextMeshProUGUI nameText;
     public Image iconImage;
@@ -17,10 +19,36 @@ public class BuildingButton : MonoBehaviour
     public TextMeshProUGUI otherText;
     public Button button;
 
-    private BuildingData buildingData;
+    public BuildingData buildingData;
     public GameObject insufficientResourcesOverlay;
 
+    // for tooltip
+    void OnEnable()
+    {
+        var eventTrigger = GetComponent<EventTrigger>() ?? gameObject.AddComponent<EventTrigger>();
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerEnter;
+        entry.callback.AddListener((data) => { TooltipSystem.Instance.OnPointerEnter((PointerEventData)data); });
+        eventTrigger.triggers.Add(entry);
 
+        EventTrigger.Entry exitEntry = new EventTrigger.Entry();
+        exitEntry.eventID = EventTriggerType.PointerExit;
+        exitEntry.callback.AddListener((data) => { TooltipSystem.Instance.OnPointerExit((PointerEventData)data); });
+        eventTrigger.triggers.Add(exitEntry);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (buildingData != null)
+        {
+            TooltipSystem.Instance.OnPointerEnter(eventData);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        TooltipSystem.Instance.OnPointerExit(eventData);
+    }
 
     public void Setup(BuildingData building)
     {
@@ -76,4 +104,5 @@ public class BuildingButton : MonoBehaviour
         ResourceCost cost = costs.Find(c => c.resourceName == resourceName);
         return cost != null ? cost.amount.ToString() : "0";
     }
+
 }

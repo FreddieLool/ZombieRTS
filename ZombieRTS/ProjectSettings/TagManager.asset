@@ -10,6 +10,7 @@ TagManager:
   - Building
   - Back Button
   - PaintedPrefab
+  - BuildingUI
   layers:
   - Default
   - TransparentFX

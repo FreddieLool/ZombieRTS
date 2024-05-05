@@ -47,12 +47,12 @@ public class UnitManager : MonoBehaviour
 
     public void SpawnUnit(string unitName, Vector3 position)
     {
-        if (!CanSpawn(unitName))
+/*        if (!CanSpawn(unitName))
         {
             Debug.Log("Not enough resources.");
             return;
         }
-
+*/
         if (unitDataDictionary.TryGetValue(unitName, out UnitData unitData))
         {
             GameObject unit = Instantiate(unitData.unitPrefab, position, Quaternion.identity, unitParent);
@@ -82,12 +82,12 @@ public class UnitManager : MonoBehaviour
         }
     }
 
-    public bool CanSpawn(string unitName)
+/*    public bool CanSpawn(string unitName)
     {
         if (unitDataDictionary.TryGetValue(unitName, out UnitData unitData))
         {
             return ResourceManager.Instance.HasEnoughResources(unitData.costs);
         }
         return false;
-    }
+    }*/
 }

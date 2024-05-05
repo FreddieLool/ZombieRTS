@@ -90,7 +90,7 @@ public class ResourcePopupManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("FloatingTextPrefab is not assigned in the ResourcePopupManager.");
+            Debug.LogError("FloatingTextPrefab is not assigned in the ResourcePopManager.");
         }
     }
 

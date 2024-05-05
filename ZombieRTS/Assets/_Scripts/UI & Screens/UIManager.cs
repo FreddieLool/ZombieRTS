@@ -93,22 +93,27 @@ public class UIManager : MonoBehaviour
         HandleBuildingUIToggle();
         HandleUnitPanelToggle();
 
-        if (Input.GetMouseButtonDown(0) && !IsPointerOverUIObject())
+        if (Input.GetMouseButtonDown(0))
         {
-            // If we clicked and it's not on a UI object, then perform additional checks
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (!IsPointerOverUIObject())
             {
-                Building building = hit.collider.GetComponent<Building>();
-                if (building != null)
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (Physics.Raycast(ray, out RaycastHit hit))
                 {
-                    ShowBuildingInfo(building); // Show UI for the clicked building
-                    return; 
+                    Building building = hit.collider.GetComponent<Building>();
+                    if (building != null && building.Selectable)
+                    {
+                        ShowBuildingInfo(building); // Show UI for the clicked building
+                        return; // Prevent further UI hiding
+                    }
                 }
-            }
 
-            // If the raycast didn't hit a building or if it's a click in empty space, hide the UI
-            HideUI();
+                //HideUI(); // Only hide UI if not clicking on any part of the UI
+            }
+            else if(IsPointerOverUIObject() && Input.GetMouseButtonDown(0))
+            {
+                Debug.Log("Click inside UI!");
+            }
         }
     }
 
@@ -218,7 +223,7 @@ public class UIManager : MonoBehaviour
     {
         if (ResourceManager.Instance.HasEnoughResources(unitData.costs))
         {
-            ResourceManager.Instance.DeductResources(unitData.costs); // Ensure this happens only here
+            ResourceManager.Instance.DeductResources(unitData.costs); // Ensure this happens ONLY here
             StartUnitConstruction(unitData);
         }
         else
@@ -230,6 +235,7 @@ public class UIManager : MonoBehaviour
 
     public void StartUnitConstruction(UnitData unitData)
     {
+        Debug.Log("Unit Construction started!");
         GameObject uiObj = Instantiate(unitConstructionPrefab, unitConstructionParent);
         uiObj.GetComponent<UnitConstructionUI>().Initialize(unitData.icon, unitData.buildTime, unitData);
     }
@@ -255,11 +261,37 @@ public class UIManager : MonoBehaviour
         LeanTween.scale(cycleCounterText.gameObject, Vector3.one, 0.5f).setEase(LeanTweenType.easeOutElastic);
     }
 
-    private bool IsPointerOverUIObject()
+    public bool IsPointerOverUIObject()
     {
-        // true if the pointer is over any UI element
-        return EventSystem.current.IsPointerOverGameObject();
+        PointerEventData eventData = new PointerEventData(EventSystem.current) { position = Input.mousePosition };
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+
+        foreach (var result in results)
+        {
+            if (result.gameObject.CompareTag("BuildingUI"))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
+
+
+    // Helper method to check if the GameObject is part of the Building UI hierarchy
+    private bool IsPartOfBuildingUI(GameObject obj)
+    {
+        Transform parent = obj.transform.parent;
+        while (parent != null)
+        {
+            if (parent.gameObject.CompareTag("BuildingUI"))
+                return true;
+            parent = parent.parent;
+        }
+        return false;
+    }
+
 
     private void PopulateBuildingButtons()
     {
@@ -309,13 +341,22 @@ public class UIManager : MonoBehaviour
 
         Vector3 uiPosition = building.transform.position + new Vector3(0, 5, 0);
         activeInfoUI = Instantiate(infoUIPrefab, uiPosition, Quaternion.identity, WorldSpaceCanvasParent);
-        activeInfoUI.GetComponent<BuildingUI>().SetupUI(building);
+        BuildingUI buildingUI = activeInfoUI.GetComponent<BuildingUI>();
+        if (buildingUI != null)
+        {
+            buildingUI.SetupUI(building);
+        }
+        else
+        {
+            Debug.LogError("BuildingUI component is missing on the prefab!");
+        }
     }
 
     public void HideUI()
     {
         if (activeInfoUI != null)
         {
+            Debug.Log("Hiding UI now");
             Destroy(activeInfoUI);
         }
     }
