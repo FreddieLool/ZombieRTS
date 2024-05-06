@@ -41,6 +41,7 @@ public class LightingManager : MonoBehaviour
 
     private void Start()
     {
+        if (globalVolume == null) return;
         if (globalVolume.profile.TryGet<Vignette>(out var v) != false)
         {
             vignette = v;

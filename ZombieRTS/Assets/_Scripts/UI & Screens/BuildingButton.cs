@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static AudioManager;
 
-public class BuildingButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class BuildingButton : MonoBehaviour
 {
     public TextMeshProUGUI nameText;
     public Image iconImage;
@@ -23,7 +23,7 @@ public class BuildingButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public GameObject insufficientResourcesOverlay;
 
     // for tooltip
-    void OnEnable()
+/*    void OnEnable()
     {
         var eventTrigger = GetComponent<EventTrigger>() ?? gameObject.AddComponent<EventTrigger>();
         EventTrigger.Entry entry = new EventTrigger.Entry();
@@ -35,9 +35,9 @@ public class BuildingButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
         exitEntry.eventID = EventTriggerType.PointerExit;
         exitEntry.callback.AddListener((data) => { TooltipSystem.Instance.OnPointerExit((PointerEventData)data); });
         eventTrigger.triggers.Add(exitEntry);
-    }
+    }*/
 
-    public void OnPointerEnter(PointerEventData eventData)
+/*    public void OnPointerEnter(PointerEventData eventData)
     {
         if (buildingData != null)
         {
@@ -48,7 +48,7 @@ public class BuildingButton : MonoBehaviour, IPointerEnterHandler, IPointerExitH
     public void OnPointerExit(PointerEventData eventData)
     {
         TooltipSystem.Instance.OnPointerExit(eventData);
-    }
+    }*/
 
     public void Setup(BuildingData building)
     {

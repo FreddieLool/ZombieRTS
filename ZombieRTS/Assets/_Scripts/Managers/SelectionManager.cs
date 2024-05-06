@@ -112,21 +112,24 @@ public class SelectionManager : MonoBehaviour
 
 
 
-
+                // fix bug to select single unit on single click
                 if (hit.collider.CompareTag("Unit"))
                 {
                     GameObject hitUnit = hit.collider.gameObject;
-                    if (selectedUnits.Contains(hitUnit) && isCtrlHeld)
+                    if (/*selectedUnits.Contains(hitUnit) &&*/ isCtrlHeld)
                     {
                         DeselectUnit(hitUnit);
+                        Debug.Log("Unit click: Deselect");
                     }
-                    else if (!selectedUnits.Contains(hitUnit) && isCtrlHeld)
+                    else if (/*!selectedUnits.Contains(hitUnit) && */ !isCtrlHeld)
                     {
                         SelectUnit(hitUnit);
+                        Debug.Log("Unit click: Select");
                     }
                     else
                     {
-                        DeselectAll();
+                        Debug.Log("Unit click: Select");
+                        //DeselectAll();
                         SelectUnit(hitUnit);
                     }
                 }
@@ -285,10 +288,12 @@ public class SelectionManager : MonoBehaviour
             UnitController unitController = unit.GetComponent<UnitController>();
             if (unitController != null)
             {
+                Debug.Log("inside if statement");
                 unitController.ToggleSelection(true);
                 Unit unitComponent = unitController.GetComponent<Unit>();
                 if (unitComponent != null)
                 {
+                    Debug.Log("inside if statement unit component");
                     UnitInfoDisplay.Instance.UpdateUnitInfo(unitComponent);
                 }
             }
@@ -297,10 +302,19 @@ public class SelectionManager : MonoBehaviour
 
             // change this
             AudioManager.Instance.PlaySoundEffect(SoundEffect.ClickOnBuilding);
+            Debug.Log("Selected Unit! NOW!");
         }
 
         UnitInfoDisplay.Instance.UpdateSelectedUnitsCount(selectedUnits.Count);
     }
+
+    //
+    //
+    // backup
+    //
+    //
+    // fixing single click unit selection
+    //
 
     private void DeselectUnit(GameObject unit)
     {

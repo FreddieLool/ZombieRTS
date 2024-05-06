@@ -6,6 +6,7 @@ public class SceneInitializer : MonoBehaviour
 {
     [SerializeField] private GameObject gameManagerPrefab;
     [SerializeField] private GameObject audioManagerPrefab;
+    [SerializeField] private GameObject resourceManagerPrefab;
 
     void Awake()
     {
@@ -16,6 +17,10 @@ public class SceneInitializer : MonoBehaviour
         if (AudioManager.Instance == null)
         {
             Instantiate(audioManagerPrefab);
+        }
+        if (ResourceManager.Instance == null)
+        {
+            Instantiate(resourceManagerPrefab);
         }
     }
 }

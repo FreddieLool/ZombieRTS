@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -9,6 +10,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private Button playButton;
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button creditsButton;
+    [SerializeField] private Button resetDataButton, haxGameButton;
 
 
     [Header("Panels")]
@@ -24,6 +26,11 @@ public class MainMenu : MonoBehaviour
     [Header("Credits Panel")]
     [SerializeField] private Button creditsBackButton;
 
+
+    // Resource Stats
+    [SerializeField] private TextMeshProUGUI boneResourcesTxt;
+    [SerializeField] private TextMeshProUGUI biohazardResourcesTxt;
+    [SerializeField] private TextMeshProUGUI fleshResourcesTxt;
 
 
     private void Start()
@@ -52,6 +59,26 @@ public class MainMenu : MonoBehaviour
             TogglePanel(creditsPanel, false);
             AudioManager.Instance.PlaySoundEffect(AudioManager.SoundEffect.HoverAway);
         });
+
+        resetDataButton.onClick.AddListener(() =>
+        {
+            GameManager.Instance.ResetSaveData();
+            UpdateResourceDisplay();
+        });
+
+        haxGameButton.onClick.AddListener(() =>
+        {
+            GameManager.Instance.HaxResources(UpdateResourceDisplay);
+        });
+
+        ResourceManager.OnResourcesUpdated += UpdateResourceDisplay; // Subscribe to resource update events
+
+        UpdateResourceDisplay();
+    }
+
+    void OnDestroy()
+    {
+        ResourceManager.OnResourcesUpdated -= UpdateResourceDisplay; // Unsubscribe when UI is destroyed
     }
 
     private void InitializeSliders()
@@ -79,6 +106,33 @@ public class MainMenu : MonoBehaviour
         });
     }
 
+    private void UpdateResourceDisplay()
+    {
+        if (ResourceManager.Instance != null)
+        {
+            TweenResourceValue(boneResourcesTxt, ResourceManager.Instance.GetResourceAmount("Bone"));
+            TweenResourceValue(biohazardResourcesTxt, ResourceManager.Instance.GetResourceAmount("Biohazard"));
+            TweenResourceValue(fleshResourcesTxt, ResourceManager.Instance.GetResourceAmount("Flesh"));
+        }
+    }
+
+
+
+
+    private void TweenResourceValue(TextMeshProUGUI resourceText, int targetValue)
+    {
+        int currentValue = int.TryParse(resourceText.text, out currentValue) ? currentValue : 0;
+
+        // This will animate the value change over 1.5 seconds.
+        LeanTween.value(gameObject, currentValue, targetValue, 1.5f)
+            .setOnUpdate((float value) => {
+                resourceText.text = Mathf.FloorToInt(value).ToString();
+            })
+            .setEase(LeanTweenType.easeInOutQuad);
+    }
+
+
+
     private void SetupButtonEffects()
     {
         // Define colors
@@ -99,6 +153,8 @@ public class MainMenu : MonoBehaviour
         AddButtonEffects(creditsButton, creditsButtonColor);
         AddButtonEffects(settingsBackButton, backButtonColor);
         AddButtonEffects(creditsBackButton, backButtonColor);
+        AddButtonEffects(resetDataButton, backButtonColor);
+        AddButtonEffects(haxGameButton, backButtonColor);
     }
 
     public void StartGame()
@@ -149,7 +205,6 @@ public class MainMenu : MonoBehaviour
     {
         TogglePanel(settingsPanel, true);
         AudioManager.Instance.PlayClickSound();
-
     }
 
     public void OpenCredits()

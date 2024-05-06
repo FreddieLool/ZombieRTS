@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class ResourceManager : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class ResourceManager : MonoBehaviour
     private List<ResourceCost> initialResources = new List<ResourceCost>();
 
     private Dictionary<string, int> resources = new Dictionary<string, int>();
+
+    public static Action OnResourcesUpdated { get; internal set; }
 
     void Awake()
     {
@@ -26,10 +29,21 @@ public class ResourceManager : MonoBehaviour
 
     private void InitializeResources()
     {
-        // Populate the resources dictionary with initial values from the inspector
-        foreach (ResourceCost resource in initialResources)
+        // Try loading saved resources
+        GameSaveData savedData = SaveSystem.LoadGame();
+
+        if (savedData != null && savedData.resources.Count > 0)
         {
-            resources[resource.resourceName] = resource.amount;
+            // If there are saved resources, initialize from saved data
+            LoadResources(savedData.resources);
+        }
+        else
+        {
+            // Populate the resources dictionary with initial values from the inspector
+            foreach (ResourceCost resource in initialResources)
+            {
+                resources[resource.resourceName] = resource.amount;
+            }
         }
     }
 
@@ -69,11 +83,58 @@ public class ResourceManager : MonoBehaviour
         if (resources.ContainsKey(resourceName))
         {
             resources[resourceName] += amount;
-            UIManager.Instance.UpdateResourceUI();  // Update UI after change
         }
         else
         {
             resources[resourceName] = amount;
         }
+
+        // Trigger the resource update event
+        OnResourcesUpdated?.Invoke();
     }
+
+    public void AddResource(string resourceName, int amount, Action onResourcesUpdated = null)
+    {
+        if (resources.ContainsKey(resourceName))
+        {
+            resources[resourceName] += amount;
+        }
+        else
+        {
+            resources[resourceName] = amount;
+        }
+
+        onResourcesUpdated?.Invoke();
+    }
+
+
+
+    // load saved resources
+    public void LoadResources(List<ResourceSaveData> savedResources)
+    {
+        resources.Clear();
+        foreach (var resource in savedResources)
+        {
+            resources[resource.resourceName] = resource.amount;
+        }
+    }
+
+    public Dictionary<string, int> GetAllResources()
+    {
+        return new Dictionary<string, int>(resources);
+    }
+
+    public void ResetResources()
+    {
+        // Reset all resource amounts to their initial values
+        foreach (var resource in initialResources)
+        {
+            resources[resource.resourceName] = resource.amount;
+        }
+
+        // If UIManager is not initialized or available
+        // action event that can be listened by UI elements interested in resource changes.
+        OnResourcesUpdated?.Invoke();
+    }
+
 }

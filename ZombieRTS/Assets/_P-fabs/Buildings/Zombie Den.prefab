@@ -227,7 +227,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 11.709694, y: 6, z: 12}
   m_Center: {x: 0.13860011, y: 3.32, z: 0}
@@ -248,6 +248,7 @@ MonoBehaviour:
   constructionParticles: {fileID: 5407304231176938443}
   smokeParticles: {fileID: 3793266382046020161}
   explosionParticles: {fileID: 5290504108255958557}
+  isConstructed: 0
 --- !u!114 &8382179593370121816
 MonoBehaviour:
   m_ObjectHideFlags: 0

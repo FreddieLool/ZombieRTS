@@ -15,7 +15,7 @@ public class Building : MonoBehaviour
 
     private List<Coroutine> productionCoroutines = new List<Coroutine>();
     public bool Selectable { get; private set; } = false;
-    private bool isConstructed = false; // Flag to check if building is constructed
+    public bool isConstructed = false; // Flag to check if building is constructed
 
 
     void Start()
@@ -23,11 +23,11 @@ public class Building : MonoBehaviour
         // Initially disable the selection ring
         if (selectionRing != null) selectionRing.SetActive(false);
 
-        collider = GetComponent<Collider>();
+/*        collider = GetComponent<Collider>();
         if (collider != null)
         {
             collider.enabled = false;  // Start with the collider disabled
-        }
+        }*/
 
         // Initially disable particle effects
         if (constructionParticles) constructionParticles.Stop();
@@ -48,6 +48,20 @@ public class Building : MonoBehaviour
         }
     }
 
+    public void ActivateFirstCollider(GameObject buildingObject)
+    {
+        BoxCollider[] colliders = buildingObject.GetComponents<BoxCollider>();
+        if (colliders.Length > 0)
+        {
+            colliders[0].enabled = true; // Enable only the first box collider
+            Debug.Log("First collider enabled.");
+        }
+        else
+        {
+            Debug.LogError("No box colliders found on this building!");
+        }
+    }
+
     public void ActivateParticles()
     {
         if (constructionParticles) constructionParticles.Play();
@@ -57,12 +71,29 @@ public class Building : MonoBehaviour
     public void FinishConstruction()
     {
         isConstructed = true;
-        StartProduction();
         EnableInteraction();
-
-        if (constructionParticles) constructionParticles.Stop();
+        StartProduction();
+        ActivateParticles();
         if (explosionParticles) explosionParticles.Play();
     }
+
+    public void ResumeBuildingActivity()
+    {
+        isConstructed = true;
+        EnableInteraction();
+        if (smokeParticles)
+        {
+            smokeParticles.Play();
+            Debug.Log("Particles should be playing now.");
+        }
+        else
+        {
+            Debug.LogError("smokeParticles is not assigned!");
+        }
+        StartProduction();
+        ActivateParticles();
+    }
+
 
     private void StopProduction()
     {
@@ -111,12 +142,12 @@ public class Building : MonoBehaviour
     // enable interaction with the building
     public void EnableInteraction()
     {
-        SetSelectable(true);
-        Collider collider = GetComponent<Collider>();
-        if (collider != null)
+        Collider[] colliders = GetComponents<Collider>();
+        foreach (var col in colliders)
         {
-            collider.enabled = true;
+            col.enabled = true;  // This ensures all colliders are activated
         }
+        SetSelectable(true);
     }
 
     public void DisableInteraction()

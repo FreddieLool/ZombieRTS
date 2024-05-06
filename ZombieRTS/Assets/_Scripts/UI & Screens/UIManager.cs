@@ -84,7 +84,8 @@ public class UIManager : MonoBehaviour
         cycleCounterText.text = "" + 1;
         buildingUI.SetActive(false); 
         unitPanelUI.SetActive(false);
-        UpdateResourceUI();
+        ResourceManager.OnResourcesUpdated += UpdateResourceUI; // Subscribe to updates
+        UpdateResourceUI(); // Initial update
         ClearExistingUnitUI(); // clean any
     }
 
@@ -135,6 +136,11 @@ public class UIManager : MonoBehaviour
                 resourceText.text = Mathf.FloorToInt(value).ToString();
             })
             .setEase(LeanTweenType.easeInOutQuad);
+    }
+
+    void OnDestroy()
+    {
+        ResourceManager.OnResourcesUpdated -= UpdateResourceUI; // Unsubscribe to avoid memory leaks
     }
 
     // Unit Panel
@@ -380,6 +386,17 @@ public class UIManager : MonoBehaviour
         {
             HideBuildingUI();
         }
+    }
+
+    public void ResetSaveData()
+    {
+        Debug.Log("Resetting all save data...");
+        SaveSystem.ResetSaveData();  // You will need to implement this method in your SaveSystem class
+    }
+
+    public void HackGameNow()
+    {
+        GameManager.Instance.HaxResources();
     }
 
     private void ShowBuildingUI()

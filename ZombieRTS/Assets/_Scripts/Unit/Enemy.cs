@@ -88,7 +88,7 @@ public class Enemy : MonoBehaviour
 
     private void AttackTarget()
     {
-        Debug.Log("Attacking the player with " + unit.attackDamage + " damage.");
+        //Debug.Log("Attacking the player with " + unit.attackDamage + " damage.");
         targetUnit.ReceiveDamage(unit.attackDamage);
         // attack logic HERE
     }

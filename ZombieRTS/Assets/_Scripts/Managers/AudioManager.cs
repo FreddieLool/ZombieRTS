@@ -77,14 +77,17 @@ public class AudioManager : MonoBehaviour
 
     void Start()
     {
-        if (musicSource == null)
-        {
-            Debug.LogError("Missing AudioSource component on the GameObject");
-            return;
-        }
+        /*        if (musicSource == null)
+                {
+                    Debug.LogError("Missing AudioSource component on the GameObject");
+                    return;
+                }
 
-        ShuffleMusic();
-        PlayNextTrack();
+                ShuffleMusic();
+                PlayNextTrack();*/
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        PlayMusicBasedOnScene(SceneManager.GetActiveScene().name);
     }
 
     void Update()
@@ -110,6 +113,49 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
+
+    // Responsible for playing a specific track on first launch (menu scene only) *Juice
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        PlayMusicBasedOnScene(scene.name);
+    }
+
+    private void PlayMusicBasedOnScene(string sceneName)
+    {
+        if (sceneName == "Main Menu") // Replace "MenuScene" with your actual menu scene name
+        {
+            PlaySpecificTrack(3); // Index 3 for the specific track as mentioned
+        }
+        else
+        {
+            ShuffleMusic();
+            PlayNextTrack();
+        }
+    }
+
+    private void PlaySpecificTrack(int index)
+    {
+        if (index >= 0 && index < backgroundMusicTracks.Length)
+        {
+            musicSource.clip = backgroundMusicTracks[index];
+            musicSource.Play();
+            StartCoroutine(WaitForMusicEndThenShuffle());
+        }
+    }
+
+    private IEnumerator WaitForMusicEndThenShuffle()
+    {
+        yield return new WaitWhile(() => musicSource.isPlaying);
+        ShuffleMusic();
+        PlayNextTrack();
+    }
+
 
     private IEnumerator PlayNightSoundAfterDelay(List<AudioClip> soundList, AudioSource source, float delay, bool isShort)
     {

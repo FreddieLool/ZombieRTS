@@ -95,7 +95,7 @@ public class UnitController : MonoBehaviour
         
         if(targetUnit != null)
         {
-            Debug.Log("Attacking Target");
+            //Debug.Log("Attacking Target");
             if (Vector3.Distance(transform.position, targetUnit.transform.position) <= unit.attackRange)
             {
                 if (unit.CanAttack())

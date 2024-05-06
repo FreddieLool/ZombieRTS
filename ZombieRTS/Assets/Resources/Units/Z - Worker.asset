@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd818ebcfcd32b447992c25db0568fc3, type: 3}
+  m_Name: Z - Worker
+  m_EditorClassIdentifier: 
+  unitName: Z - Worker
+  unitPrefab: {fileID: 7546479615879776948, guid: d0a60863f29cd94439ea33985410fdc0,
+    type: 3}
+  icon: {fileID: 21300000, guid: dea0ecffdf81e074bbca70383369ddf8, type: 3}
+  health: 100
+  attackDamage: 5
+  movementSpeed: 7
+  buildTime: 2
+  poolSize: 50
+  costs:
+  - resourceName: Bone
+    amount: 30
