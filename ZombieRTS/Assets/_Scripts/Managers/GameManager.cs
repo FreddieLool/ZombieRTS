@@ -11,16 +11,16 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else if (Instance != this)
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
         }
+        else
+        {
+            Instance = this;
+        }
     }
+
 
 
     void Start()
@@ -75,15 +75,15 @@ public class GameManager : MonoBehaviour
     }
 
 
-    private void ResetGameState()
+    private void OnDestroy()
     {
-       
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
 
     private void InitializeGameScene()
     {
-        // Find the parents in the scene for units and buildings
+        // Setup code for the game scene, such as finding parents and loading state
         unitParent = GameObject.Find("Units/Player Units")?.transform;
         buildingParent = GameObject.Find("--- BUILDINGS PARENT")?.transform;
 
@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        LoadGameState();
+        LoadGameState(); // Load or initialize the game state as needed
     }
 
     //
@@ -107,10 +107,15 @@ public class GameManager : MonoBehaviour
     {
         SaveGameState();
     }
-
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ClearGameObjects();
+        InitializeGameScene();
     }
 
     void OnDisable()
@@ -119,34 +124,24 @@ public class GameManager : MonoBehaviour
         ClearGameObjects();
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if (scene.buildIndex == 1)
-        {
-            ClearGameObjects();
-            InitializeGameScene();
-        }
-    }
 
-    private void ClearGameObjects()
+    public void ClearGameObjects()
     {
-        // Ensure only dynamically created objects are destroyed.
-        List<GameObject> children = new List<GameObject>();
-        foreach (Transform child in unitParent)
+        // Properly destroy all dynamically created objects in the scene to reset state
+        if (unitParent != null)
         {
-            if (child.gameObject.name != "InitialUnit")
+            foreach (Transform child in unitParent)
             {
-                children.Add(child.gameObject);
+                Destroy(child.gameObject);
             }
         }
 
-        // Destroy all children except the initial unit.
-        children.ForEach(child => Destroy(child));
-
-        // Similarly clear buildings if necessary
-        foreach (Transform child in buildingParent)
+        if (buildingParent != null)
         {
-            Destroy(child.gameObject);
+            foreach (Transform child in buildingParent)
+            {
+                Destroy(child.gameObject);
+            }
         }
     }
 
@@ -162,7 +157,7 @@ public class GameManager : MonoBehaviour
     }
 
 
-    private void SaveGameState()
+    public void SaveGameState()
     {
         if (SceneManager.GetActiveScene().buildIndex == 1)
         {

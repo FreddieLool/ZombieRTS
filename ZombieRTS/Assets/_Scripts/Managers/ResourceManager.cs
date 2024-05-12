@@ -18,7 +18,6 @@ public class ResourceManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
             InitializeResources();
         }
         else if (Instance != this)

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class UnitInfoDisplay : MonoBehaviour
@@ -50,12 +51,18 @@ public class UnitInfoDisplay : MonoBehaviour
 
     public void UpdateSelectedUnitsCount(int count)
     {
-        selectedUnitsText.text = $"{count}";
+        if (selectedUnitsText == null)
+        {
+            Debug.LogError("selectedUnitsText is not initialized!");
+            return; // Early return to avoid NullReferenceException
+        }
+        selectedUnitsText.text = $"{count}"; // Update text only if the component is valid
         if (count == 0)
         {
             ClearInfo();
         }
     }
+
 
     public void ClearInfo()
     {
@@ -67,4 +74,27 @@ public class UnitInfoDisplay : MonoBehaviour
         statsGameObject.SetActive(false);
         infoGameObject.SetActive(true);
     }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.buildIndex == 1) // Assuming '1' is your game scene index
+        {
+            // Ensure all references are re-established or validated here
+        }
+        else
+        {
+            ClearInfo(); // Make sure this doesn't unintentionally interfere with non-game scenes
+        }
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
 }

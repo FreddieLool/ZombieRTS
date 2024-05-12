@@ -118,9 +118,9 @@ public class PrefabPainterEditor : Editor
         if (!Physics.Raycast(startRay, out RaycastHit startHit, Mathf.Infinity, painter.groundLayer))
             return;
 
-        for (int x = 0; x < painter.treesPerBrush; x++)
+        for (int x = 0; x < painter.objectsPerBrush; x++)
         {
-            for (int y = 0; y < painter.treesPerBrush; y++)
+            for (int y = 0; y < painter.objectsPerBrush; y++)
             {
                 Vector3 gridPoint = new Vector3(startPoint.x + x * painter.patternSpacing, startPoint.y, startPoint.z + y * painter.patternSpacing);
                 Ray ray = HandleUtility.GUIPointToWorldRay(gridPoint);
@@ -187,7 +187,7 @@ public class PrefabPainterEditor : Editor
 
         foreach (Vector3 placedPosition in placedPositions)
         {
-            if (Vector3.Distance(position, placedPosition) < painter.treePlacementRadius)
+            if (Vector3.Distance(position, placedPosition) < painter.objectPlacementRadius)
                 return false;
         }
         return true;
@@ -346,13 +346,13 @@ public class PrefabPainterEditor : Editor
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Brush Settings", EditorStyles.boldLabel);
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField("Configure the brush properties: Brush Size determines the radius for painting or deleting; Trees per Brush sets the number of prefabs placed per stroke; Tree Placement Radius specifies the spacing between prefabs to avoid overlaps; Y Offset Range adjusts the vertical position of prefabs relative to the surface level, allowing for variations in height.", EditorStyles.helpBox);
+        EditorGUILayout.LabelField("Configure the brush properties: Brush Size determines the radius for painting or deleting; Objects per Brush sets the number of prefabs placed per stroke; Object Placement Radius specifies the spacing between prefabs to avoid overlaps; Y Offset Range adjusts the vertical position of prefabs relative to the surface level, allowing for variations in height.", EditorStyles.helpBox);
         EditorGUILayout.Space();
 
 
         painter.brushSize = EditorGUILayout.Slider("Brush Size", painter.brushSize, 1f, 99f);
-        painter.treesPerBrush = EditorGUILayout.IntSlider("Trees per Brush", painter.treesPerBrush, 1, 99);
-        painter.treePlacementRadius = EditorGUILayout.Slider("Tree Placement Radius", painter.treePlacementRadius, 1f, 25f);
+        painter.objectsPerBrush = EditorGUILayout.IntSlider("Objects per Brush", painter.objectsPerBrush, 1, 99);
+        painter.objectPlacementRadius = EditorGUILayout.Slider("Object Placement Radius", painter.objectPlacementRadius, 1f, 25f);
 
         // Display Y Offset Range with current value indicators
         EditorGUILayout.BeginHorizontal();

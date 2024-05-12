@@ -53,11 +53,11 @@ public class PrefabPainter : MonoBehaviour
     // Non-serialized Public Fields (Editor-Only Settings)
     [NonSerialized] public int selectedGroupIndex = 0;
     [NonSerialized] public float brushSize = 10.0f;
-    [NonSerialized] public int treesPerBrush = 5;
+    [NonSerialized] public int objectsPerBrush = 5;
     [NonSerialized] public float minYOffset = -0.5f;
     [NonSerialized] public float maxYOffset = 0f;
     [NonSerialized] public bool randomRotation = true;
-    [NonSerialized] public float treePlacementRadius = 1f;
+    [NonSerialized] public float objectPlacementRadius = 1f;
     [NonSerialized] public bool continuousMode = true;
     [NonSerialized] public bool avoidOverlap = true;
     [NonSerialized] public bool enableRandomScale = false; // Toggle for enabling random scaling
